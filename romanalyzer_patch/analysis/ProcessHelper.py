@@ -1,11 +1,10 @@
 import subprocess as sp
 import re
-import os
 from pathlib import Path
 from loguru import logger
 from collections import namedtuple
 
-from analysis.signatures.SymbolInformation import SymbolInformation
+from romanalyzer_patch.analysis.signatures.SymbolInformation import SymbolInformation
 
 OBJDUMP_PATH = "romanalyzer_patch/assets/objdump"
 # OBJDUMP_PATH = "objdump"

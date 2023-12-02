@@ -4,19 +4,16 @@ import re
 import os
 from pathlib import Path
 
-from rich import print as rich_print
-from rich.progress import track
-
 import lzma
 import json
 from loguru import logger
 import multiprocessing
 
-from analysis.BuildProperty import BuildProperty
-from analysis.signatures.MaskSignature import MaskSignature
-from analysis.signatures.RollingSignature import RollingSignature
-from analysis.signatures.MultiSignatureScanner import MultiSignatureScanner
-from analysis import ProcessHelper
+from romanalyzer_patch.analysis.BuildProperty import BuildProperty
+from romanalyzer_patch.analysis.signatures.MaskSignature import MaskSignature
+from romanalyzer_patch.analysis.signatures.RollingSignature import RollingSignature
+from romanalyzer_patch.analysis.signatures.MultiSignatureScanner import MultiSignatureScanner
+from romanalyzer_patch.analysis import ProcessHelper
 
 
 def validateFilename(filename):
@@ -125,25 +122,6 @@ class TestEngine(object):
         print("Claimed: {}".format(DCnt))
         print("Inconclusive: {}".format(_Cnt))
         print("NotAffected: {}".format(NCnt))
-
-        #line = ""
-        #for i, res in enumerate(reports):
-        #    if i % 24 == 0:
-        #       rich_print(line)
-        #       #rich_print()
-        #       line = ""
-
-        #   if res == "T":
-        #       line += "[green on green]T[/green on green]"
-        #   elif res == "F":
-        #       line += "[red on red]F[/red on red]"
-        #   elif res == "N":
-        #       line += "[white on white]N[/white on white]"
-        #   elif res == "_":
-        #       line += "[blue on blue]_[/blue on blue]"
-        #   elif res == "D":
-        #       line += "[yellow on yellow]D[/yellow on yellow]"
-        #rich_print(line)
         
         return {
             "Summary": {

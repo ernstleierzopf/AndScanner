@@ -1,8 +1,9 @@
 from pathlib import Path
-from utils import execute
-from extractor.base import Extractor
-from extractor.extimg import ExtImgExtractor
-from extractor.archive import ArchiveExtractor
+from romanalyzer_extractor.utils import execute
+from romanalyzer_extractor.extractor.base import Extractor
+from romanalyzer_extractor.extractor.extimg import ExtImgExtractor
+from romanalyzer_extractor.extractor.archive import ArchiveExtractor
+
 
 class SparseImgExtractor(Extractor):
     

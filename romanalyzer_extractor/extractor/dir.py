@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 class DirExtractor(object):
 
     def __init__(self, target):

@@ -1,7 +1,8 @@
 from pathlib import Path
-from utils import execute
-from extractor.base import Extractor
-from extractor.newdat import NewDatExtractor
+from romanalyzer_extractor.utils import execute
+from romanalyzer_extractor.extractor.base import Extractor
+from romanalyzer_extractor.extractor.newdat import NewDatExtractor
+
 
 class BrotliExtractor(Extractor):
     tool = Path('romanalyzer_extractor/tools/brotli/brotli').absolute()

@@ -2,8 +2,8 @@ import logging
 from time import sleep
 from threading import Thread
 
-from extractor.rom import ROMExtractor
-from settings import EXTRACT_SLEEP_TIMEOUT
+from romanalyzer_extractor.extractor.rom import ROMExtractor
+from romanalyzer_extractor.settings import EXTRACT_SLEEP_TIMEOUT
 
 log = logging.getLogger('extract_thread')
 

@@ -1,18 +1,19 @@
 from pathlib import Path
 
-from analysis_extractor.classifier import Classify
+from romanalyzer_extractor.analysis_extractor.classifier import Classify
 
-from extractor.base import Extractor
-from extractor.archive import ArchiveExtractor
-from extractor.binwalk import BinwalkExtractor
-from extractor.bootimg import BootImgExtractor
-from extractor.brotli import BrotliExtractor
-from extractor.extimg import ExtImgExtractor
-from extractor.newdat import NewDatExtractor
-from extractor.ota import AndrOtaPayloadExtractor
-from extractor.ozip import OZipExtractor
-from extractor.sparse import SparseImgExtractor
-from extractor.dir import DirExtractor
+from romanalyzer_extractor.extractor.base import Extractor
+from romanalyzer_extractor.extractor.archive import ArchiveExtractor
+from romanalyzer_extractor.extractor.binwalk import BinwalkExtractor
+from romanalyzer_extractor.extractor.bootimg import BootImgExtractor
+from romanalyzer_extractor.extractor.brotli import BrotliExtractor
+from romanalyzer_extractor.extractor.extimg import ExtImgExtractor
+from romanalyzer_extractor.extractor.newdat import NewDatExtractor
+from romanalyzer_extractor.extractor.ota import AndrOtaPayloadExtractor
+from romanalyzer_extractor.extractor.ozip import OZipExtractor
+from romanalyzer_extractor.extractor.sparse import SparseImgExtractor
+from romanalyzer_extractor.extractor.dir import DirExtractor
+
 
 class ROMExtractor(Extractor):
 

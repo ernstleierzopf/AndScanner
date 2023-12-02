@@ -2,8 +2,8 @@ from datetime import datetime
 from elasticsearch_dsl.connections import connections
 from elasticsearch_dsl import Document, Date, Integer, Text, Keyword
 
-from utils import readcfg
-from settings import ES_ANDROID_ROM_INDEX
+from romanalyzer_extractor.utils import readcfg
+from romanalyzer_extractor.settings import ES_ANDROID_ROM_INDEX
 
 ip_addr = readcfg('configs/elastic.cfg', 'ElasticSearch', 'IP')
 connections.create_connection(hosts=[ip_addr])

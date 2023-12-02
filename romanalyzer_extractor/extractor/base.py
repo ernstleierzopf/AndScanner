@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
-from utils import execute
+from romanalyzer_extractor.utils import execute
+
 
 class Extractor(object):
 

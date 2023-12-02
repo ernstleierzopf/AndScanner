@@ -1,7 +1,7 @@
 from abc import ABC
 
 from loguru import logger
-from analysis import ProcessHelper
+from romanalyzer_patch.analysis import ProcessHelper
 
 
 class Signature(object):

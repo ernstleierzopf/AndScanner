@@ -1,4 +1,4 @@
-from analysis.signatures.Signature import Signature
+from romanalyzer_patch.analysis.signatures.Signature import Signature
 from loguru import logger
 from hashlib import sha256
 from collections import namedtuple

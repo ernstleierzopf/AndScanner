@@ -1,5 +1,5 @@
 from pathlib import Path
-from utils import log, execute
+from romanalyzer_extractor.utils import log, execute
 
 def magic_guess(target, mime=False):
     cmd = 'file "{}"'.format(target)

@@ -1,7 +1,8 @@
 from pathlib import Path
-from utils import execute
-from extractor.base import Extractor
-from extractor.extimg import ExtImgExtractor
+from romanalyzer_extractor.utils import execute
+from romanalyzer_extractor.extractor.base import Extractor
+from romanalyzer_extractor.extractor.extimg import ExtImgExtractor
+
 
 class NewDatExtractor(Extractor):
     tool = Path('romanalyzer_extractor/tools/sdat2img/sdat2img.py').absolute()

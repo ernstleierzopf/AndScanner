@@ -1,10 +1,10 @@
-from analysis.signatures.Signature import Signature
 from loguru import logger
 import math
 from hashlib import sha256
 import tempfile
 import os
-from analysis.ProcessHelper import getSigToolCalcOutput
+from romanalyzer_patch.analysis.signatures.Signature import Signature
+from romanalyzer_patch.analysis.ProcessHelper import getSigToolCalcOutput
 
 
 class RollingSignature(Signature):

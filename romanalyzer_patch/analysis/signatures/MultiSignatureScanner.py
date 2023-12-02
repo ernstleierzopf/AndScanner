@@ -1,10 +1,10 @@
 from loguru import logger
 from pathlib import Path
-from analysis.signatures.MaskSignature import MaskSignature
-from analysis.signatures.RollingSignature import RollingSignature
-from analysis.signatures.Signature import Signature
-from analysis.signatures.SymbolInformation import SymbolInformation
-from analysis import ProcessHelper
+from romanalyzer_patch.analysis.signatures.MaskSignature import MaskSignature
+from romanalyzer_patch.analysis.signatures.RollingSignature import RollingSignature
+from romanalyzer_patch.analysis.signatures.Signature import Signature
+from romanalyzer_patch.analysis.signatures.SymbolInformation import SymbolInformation
+from romanalyzer_patch.analysis import ProcessHelper
 
 
 def getSignatureInstance(signatureString):

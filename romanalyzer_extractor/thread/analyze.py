@@ -3,10 +3,10 @@ from time import sleep
 from pathlib import Path
 from threading import Thread
 
-from analysis.static import analyze_extracted
+from romanalyzer_patch.analysis.static import analyze_extracted
 from manager.mongo import MongoManager
-from utils import rmf, rmdir
-from settings import ANALYZE_SLEEP_TIMEOUT
+from romanalyzer_extractor.utils import rmf, rmdir
+from romanalyzer_extractor.settings import ANALYZE_SLEEP_TIMEOUT
 
 log = logging.getLogger('analyze_thread')
 mongo_manager = MongoManager()

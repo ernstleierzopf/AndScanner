@@ -4,9 +4,9 @@ from pathlib import Path
 from collections import defaultdict
 from hashlib import md5, sha1, sha256
 
-from utils import log, execute
-#from analysis.esrom import ESRomFile
-from analysis_extractor.classifier import Classify
+from romanalyzer_extractor.utils import log, execute
+from romanalyzer_extractor.analysis_extractor.classifier import Classify
+
 
 class AndroRomFile(object):
 

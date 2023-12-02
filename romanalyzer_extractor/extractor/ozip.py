@@ -1,7 +1,8 @@
 from pathlib import Path
-from utils import rmf, execute
-from extractor.base import Extractor
-from extractor.archive import ArchiveExtractor
+from romanalyzer_extractor.utils import rmf, execute
+from romanalyzer_extractor.extractor.base import Extractor
+from romanalyzer_extractor.extractor.archive import ArchiveExtractor
+
 
 class OZipExtractor(Extractor):
 
