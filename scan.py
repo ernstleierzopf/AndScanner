@@ -8,7 +8,9 @@ MAX_SUPPORTED_API_LEVEL: int = 30
 
 def scan(image_path: str, vendor: str, api_level: int):
     # Extract image.
-    extracted_image_path = extract_image(image_path, vendor, api_level)
+    extracted_image_path = f"{image_path}.extracted"
+    if not os.path.exists(extracted_image_path):
+        extracted_image_path = extract_image(image_path, vendor, api_level)
 
     # Run vulnerability scan.
     run_vulnerability_scan(extracted_image_path)
@@ -35,6 +37,12 @@ def single_scan(image_path: str):
         return
 
     # Start scan.
+    print("Scanning image")
+    print(f"Image path: {image_path}",
+          f"Vendor    : {vendor}",
+          f"API Level : {api_level}",
+          sep="\n")
+
     scan(image_path, vendor, api_level)
 
 
