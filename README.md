@@ -72,12 +72,12 @@ JSON file format:
   {
     "path": "path/to/image/foo.zip",
     "vendor": "vendor foo",
-    "api-level": 30
+    "api_level": 30
   },
   {
     "path": "path/to/image/bar.zip",
     "vendor": "vendor bar",
-    "api-level": 28
+    "api_level": 28
   }
 ]
 ```
