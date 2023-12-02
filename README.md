@@ -84,7 +84,7 @@ JSON file format:
 
 To run a batch scan:
 ```shell
-$ python3 scan.py path/to/images.json
+$ python3 scan.py path/to/the/file.json
 ```
 
 ___
