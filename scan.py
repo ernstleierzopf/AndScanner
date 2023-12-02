@@ -3,6 +3,8 @@ import sys
 import json
 from scan_util import extract_image, run_vulnerability_scan, run_app_analyzer
 
+MAX_SUPPORTED_API_LEVEL: int = 30
+
 
 def scan(image_path: str, vendor: str, api_level: int):
     # Extract image.
@@ -22,11 +24,15 @@ def single_scan(image_path: str):
         raise Exception("Missing vendor name")
 
     try:
-        api_level = int(sys.argv[3])
+        api_level = abs(int(sys.argv[3]))
     except ValueError:
         raise Exception("Invalid Android API level")
     except Exception:
         raise Exception("Missing image Android API level")
+
+    if api_level > MAX_SUPPORTED_API_LEVEL:
+        print(f"Android API level {api_level} is not supported by AndScanner")
+        return
 
     # Start scan.
     scan(image_path, vendor, api_level)
@@ -51,6 +57,7 @@ def batch_scan(scan_queue: []):
             raise Exception(f"Missing Android API level for image {index}")
 
         # Start scan.
+        print(f"Scanning image {index}")
         scan(image_path, vendor, api_level)
 
 
@@ -66,7 +73,6 @@ if __name__ == "__main__":
         with open(file_path, "r") as f:
             parsed_scan_queue = json.load(f)
 
-        # Scan the images.
         batch_scan(parsed_scan_queue)
 
     # Single Scan.
