@@ -1,17 +1,12 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 #encoding: utf-8
-import os
 import sys
 import logging
-import datetime
 from pathlib import Path
 from optparse import OptionParser
 
+from static_analyzer import StaticAnalyzer
 from androguard.core import androconf
-from androguard.core.bytecodes import apk
-
-#from utils import print_exception
-from static import StaticAnalyzer
 
 __version__ = '0.1'
 
@@ -19,10 +14,11 @@ __version__ = '0.1'
 logging.basicConfig(level=logging.DEBUG,
     format='%(asctime)s %(filename)s [line:%(lineno)d]  \t%(levelname)s %(message)s',
     datefmt='%a, %d %b %Y %H:%M:%S',
-    filename=os.path.split(os.path.realpath(__file__))[0]+'/analysis.log',
+    filename=str(Path(__file__).parent.parent / "log" / "analysis.log"),
     filemode='w')
 logger = logging.getLogger('main')
 logger.addHandler(logging.StreamHandler(sys.stdout))
+
 
 def get_analysis_queue(options):
     analysis_queue = []

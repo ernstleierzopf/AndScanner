@@ -1,22 +1,13 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 #encoding: utf-8
+import hashlib
+import logging
 import os
 import sys
-import time
-import logging
-import traceback
-import shutil
-import zipfile
-import hashlib
-
 from pathlib import Path
 
-from androguard.core import bytecode
-from androguard.core.bytecodes import apk
-from androguard.core.bytecodes import dvm
-from androguard.core.analysis import analysis
-
-from utils import export_to_csv, export_to_txt
+from androguard.core.bytecodes import dvm, apk
+from utils import export_to_txt
 
 abs_path = os.path.abspath(os.path.dirname(__file__))
 resource_path=os.path.join(abs_path,"resource")
