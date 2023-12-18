@@ -30,3 +30,4 @@ __pycache__/
 # Files from tests
 /test.py
 /image_queue.json
+/app_analyzer/log/analysis.log
