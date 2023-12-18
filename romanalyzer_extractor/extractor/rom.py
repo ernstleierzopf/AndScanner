@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from romanalyzer_extractor.analysis_extractor.classifier import Classify
+from romanalyzer_extractor.analysis_extractor.classifier import classify
 
 from romanalyzer_extractor.extractor.base import Extractor
 from romanalyzer_extractor.extractor.archive import ArchiveExtractor
@@ -24,8 +24,8 @@ class ROMExtractor(Extractor):
         'archive': ArchiveExtractor,
         'otapayload': AndrOtaPayloadExtractor,
         'bootimg': BootImgExtractor,
+        # 'binwalk': BinwalkExtractor,
         'sparseimg': SparseImgExtractor,
-        # 'dataimg': BinwalkExtractor,
         'extimg': ExtImgExtractor,
         'brotli': BrotliExtractor,
         'newdat': NewDatExtractor,
@@ -45,18 +45,15 @@ class ROMExtractor(Extractor):
         while self.process_queue:
             
             process_item = self.process_queue.pop()
-            guess = Classify(process_item)
+            guess = classify(process_item)
             
-            #print(process_item,"   ",guess)
-            
-            self.log.debug("\t 000000 {}  {}".format(process_item,guess))
+            self.log.debug("\t 000000 {}  {}".format(process_item, guess))
             
             if guess not in self.extractor_map.keys():
                 continue
 
             try:
                 print(guess)
-                #print(process_item,"   ",guess)
                 self.enqueue(self.extractor_map[guess](process_item).extract())
             except Exception as e:
                 self.log.exception("failed to extract {} ... skip it.".format(process_item))

@@ -7,7 +7,6 @@
 /.idea/vcs.xml
 
 venv/
-scan_queue.json
 /romanalyzer_extractor/log/analyze.log
 /romanalyzer_extractor/log/aws_down.log
 /romanalyzer_extractor/log/aws_up.log
@@ -18,3 +17,16 @@ scan_queue.json
 /romanalyzer_extractor/log/mongo.log
 /romanalyzer_extractor/log/neo4j.log
 /romanalyzer_extractor/log/static.log
+
+__pycache__/
+*.pyc
+*.pyo
+
+.idea/
+
+*.o
+*.so
+
+# Files from tests
+/test.py
+/image_queue.json

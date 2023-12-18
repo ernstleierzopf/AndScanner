@@ -4,25 +4,32 @@ from romanalyzer_extractor.extractor.base import Extractor
 
 
 class BootImgExtractor(Extractor):
-    tool = Path('romanalyzer_extractor/tools/bootimg_tools/split_boot').absolute()
+    def __init__(self, target):
+        super().__init__(target)
+        self.tool = Path("romanalyzer_extractor/tools/bootimg_extraction/unpack_bootimg.py").absolute()
 
     def extract(self):
-        if not self.chmod(): return
-        self.log.debug("Bootimg extract: {}".format(self.target))
+        if not self.chmod():
+            return
+
+        self.log.debug(f"Bootimg extract: {self.target}")
         self.log.debug("\tstart extract target")
 
-        workdir = self.target.parents[0]
-        #extract_cmd = '{split_boot} "{boot_img}"'.format(
-        extract_cmd = 'cd {workdir} && {split_boot} "{boot_img}"'.format(
-                        workdir=workdir,
-                        split_boot=self.tool, 
-                        boot_img=self.target.absolute())
+        # Parts of extraction command.
+        workdir = self.target.parent
+        split_boot = self.tool
+        boot_img = self.target.absolute()
+        self.extracted = workdir / self.target.stem
+
+        # Build extraction command.
+        extract_cmd = f"cd {workdir} && {split_boot} --boot_img \"{boot_img}\" --out \"{self.extracted}\""
+
+        # Perform extraction.
         execute(extract_cmd)
 
-        self.extracted = workdir / 'boot'
-        if not self.extracted.exists(): 
+        if not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))
-            return None
+            return workdir
         else:
             self.log.debug("\textracted path: {}".format(self.extracted))
             return self.extracted

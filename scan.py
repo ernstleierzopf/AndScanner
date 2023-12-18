@@ -1,22 +1,25 @@
 import os
 import sys
 import json
-from scan_util import extract_image, run_vulnerability_scan, run_app_analyzer
-
-MAX_SUPPORTED_API_LEVEL: int = 30
+from util import validate, extract_image, run_vulnerability_scan, run_app_analyzer
 
 
 def scan(image_path: str, vendor: str, api_level: int):
-    # Extract image.
-    extracted_image_path = f"{image_path}.extracted"
-    if not os.path.exists(extracted_image_path):
-        extracted_image_path = extract_image(image_path, vendor, api_level)
+    # Validate API level.
+    print("Stage 1: Validating Android image API level")
+    validate(api_level)
+
+    # Extracting image.
+    print("Stage 2: Extracting image")
+    extracted_image_path = extract_image(image_path, vendor)
 
     # Run vulnerability scan.
+    print("Stage 3: Running vulnerability scans")
     run_vulnerability_scan(extracted_image_path)
 
     # Run app analyzer.
-    run_app_analyzer(extracted_image_path)
+    # print("Stage 4: Running app analyzer")
+    # run_app_analyzer(extracted_image_path)
 
 
 def single_scan(image_path: str):
@@ -32,11 +35,7 @@ def single_scan(image_path: str):
     except Exception:
         raise Exception("Missing image Android API level")
 
-    if api_level > MAX_SUPPORTED_API_LEVEL:
-        print(f"Android API level {api_level} is not supported by AndScanner")
-        return
-
-    # Start scan.
+    # Begin scan.
     print("Scanning image")
     print(f"Image path: {image_path}",
           f"Vendor    : {vendor}",
@@ -65,7 +64,7 @@ def batch_scan(scan_queue: []):
             raise Exception(f"Missing Android API level for image {index}")
 
         # Start scan.
-        print(f"Scanning image {index}")
+        print(f"Scanning image {index + 1}")
         scan(image_path, vendor, api_level)
 
 

@@ -7,6 +7,7 @@ from romanalyzer_extractor.settings import EXTRACT_SLEEP_TIMEOUT
 
 log = logging.getLogger('extract_thread')
 
+
 class ExtractThread(Thread):
 
     def __init__(self, task_queue, out_queue, name='ExtractThread'):
@@ -29,7 +30,7 @@ class ExtractThread(Thread):
                 extracted = ROMExtractor(meta['romPath']).extract()
                 
                 if not extracted:
-                    log.warn(u"{}: Failed to extract {}".format(
+                    log.warning(u"{}: Failed to extract {}".format(
                         self._name, meta['romName']
                     ))
                     continue

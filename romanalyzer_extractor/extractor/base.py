@@ -8,10 +8,7 @@ def initialize_attributes(target):
     _extracted = None
 
     # Target Path
-    if isinstance(target, Path):
-        _target = target
-    else:
-        _target = Path(target).absolute()
+    _target = Path(target).absolute()
 
     # Extracted Path
     if _target.suffix == '.ozip':
@@ -35,10 +32,13 @@ class Extractor(object):
 
     def chmod(self):
         if not self.tool.exists():
-            self.log.error(f"Failed to found {self.tool}")
+            self.log.error(f"Failed to find extraction tool: {self.tool}")
             return False
-        
-        chmod_cmd = 'chmod +x "{tool}"'.format(tool=self.tool)
+
+        # Build chmod command.
+        chmod_cmd = f"chmod +x {self.tool}"
+
+        # Perform chmod command.
         execute(chmod_cmd)
 
         return True

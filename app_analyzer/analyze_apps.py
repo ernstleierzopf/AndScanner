@@ -14,7 +14,7 @@ __version__ = '0.1'
 logging.basicConfig(level=logging.DEBUG,
     format='%(asctime)s %(filename)s [line:%(lineno)d]  \t%(levelname)s %(message)s',
     datefmt='%a, %d %b %Y %H:%M:%S',
-    filename=str(Path(__file__).parent.parent / "log" / "analysis.log"),
+    filename=str(Path(__file__).absolute().parent / "log" / "analysis.log"),
     filemode='w')
 logger = logging.getLogger('main')
 logger.addHandler(logging.StreamHandler(sys.stdout))

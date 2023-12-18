@@ -5,7 +5,7 @@ from collections import defaultdict
 from hashlib import md5, sha1, sha256
 
 from romanalyzer_extractor.utils import log, execute
-from romanalyzer_extractor.analysis_extractor.classifier import Classify
+from romanalyzer_extractor.analysis_extractor.classifier import classify
 
 
 class AndroRomFile(object):
@@ -17,7 +17,7 @@ class AndroRomFile(object):
         self._endian = ''
         self._machine = ''
         self._crypto = defaultdict(list)
-        self.type = Classify(self.path)
+        self.type = classify(self.path)
 
         self.belongs = meta['romName']
         self.belongsMd5 = meta['romMd5']

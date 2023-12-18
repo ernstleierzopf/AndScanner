@@ -5,7 +5,7 @@ from romanalyzer_extractor.extractor.base import Extractor
 class BinwalkExtractor(Extractor):
 
     def extract(self):
-        """Using binwalk to extract files recursivly and return extracted path."""
+        """Using binwalk to extract files recursively and return extracted path."""
 
         self.log.debug("binwalk target: {}".format(self.target))
         self.log.debug("\tstart extract target")
