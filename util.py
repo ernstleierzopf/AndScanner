@@ -204,25 +204,43 @@ def extract_image(image_path: str, vendor: str):
     return extracted_image_path
 
 
-def run_vulnerability_scan(extracted_image_path: str):
-    firmware = transform_path(extracted_image_path)
+def run_vulnerability_scan(image_path: str, extracted_image_path: str):
+    report_dir = Path(image_path).absolute().parent / "reports" / "patch_analyzer_reports"
+    report_file = report_dir / "patch_analysis_reports.txt"
 
+    if not report_dir.exists():
+        os.makedirs(report_dir)
+
+    firmware = transform_path(extracted_image_path)
     print(firmware)
 
+    # Run the patch analysis.
     test_engine = TestEngine(firmware)
     reports = test_engine.runAllVulnLogicTest()
-
     print(reports)
 
+    # Saving the reports.
+    with open(report_file, "w") as f:
+        f.write(str(reports))
 
-def run_app_analyzer(extracted_image_path: str):
-    parent_dir = os.path.dirname(extracted_image_path)
-    report_dir = os.path.join(parent_dir, '.apk_report/')
+
+def run_app_analyzer(image_path: str, extracted_image_path: str):
+    # Build reports dir path.
+    report_dir = Path(image_path).absolute().parent / "reports" / "app_analyzer_apk_reports"
+
+    if not report_dir.exists():
+        os.makedirs(report_dir)
 
     for root, dirs, files in os.walk(extracted_image_path):
         for file_str in files:
             if file_str.endswith('.apk'):
                 path_str = os.path.join(root, file_str)
-                report_path = report_dir + '/' + path_str.replace('/', '_')
-                command_str = 'python ./app_analyzer/analyze_apps.py -i ' + path_str + ' -r ' + report_path
+
+                # Build report target destination.
+                report_path = report_dir / path_str.replace('/', '_')
+
+                # Build APK file analysis command.
+                command_str = f"python ./app_analyzer/analyze_apps.py -i {path_str} -r {report_path}"
+
+                # Execute APK file analysis command.
                 os.system(command_str)

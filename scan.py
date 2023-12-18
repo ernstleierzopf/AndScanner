@@ -15,11 +15,11 @@ def scan(image_path: str, vendor: str, api_level: int):
 
     # Run vulnerability scan.
     print("Stage 3: Running vulnerability scans")
-    run_vulnerability_scan(extracted_image_path)
+    run_vulnerability_scan(image_path, extracted_image_path)
 
     # Run app analyzer.
     print("Stage 4: Running app analyzer")
-    run_app_analyzer(extracted_image_path)
+    run_app_analyzer(image_path, extracted_image_path)
 
 
 def single_scan(image_path: str):

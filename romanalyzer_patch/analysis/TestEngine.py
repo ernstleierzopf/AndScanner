@@ -37,7 +37,7 @@ class TestEngine(object):
         self._buildProperties = BuildProperty(buildProperty)
 
         self._buildtest_database = dict()
-        self._vulnerabiliies_databse = dict()
+        self._vulnerabilities_database = dict()
         self._basicTestResultCache = dict()
         self.loadTestSuites()
 
@@ -71,7 +71,7 @@ class TestEngine(object):
                 self._buildtest_database.update(data["basicTests"])
 
             elif "vulnerabilities" in data:
-                self._vulnerabiliies_databse.update(data["vulnerabilities"])
+                self._vulnerabilities_database.update(data["vulnerabilities"])
 
     def loadTestSuites(self):
         allTestSuites = json.load(open("romanalyzer_patch/assets/allTestSuites.json"))
@@ -100,7 +100,7 @@ class TestEngine(object):
         return self._buildtest_database.get(uuid)
 
     def getVulnLogicByCVE(self, cve):
-        return self._vulnerabiliies_databse.get(cve)
+        return self._vulnerabilities_database.get(cve)
 
     def getBasicTestResultByUUID(self, uuid):
         test = self.getBasicTestByUUID(uuid)
@@ -160,7 +160,7 @@ class TestEngine(object):
 
     def runAllVulnLogicTest(self):
         reports = dict()
-        totalTasks = len(self._vulnerabiliies_databse)
+        totalTasks = len(self._vulnerabilities_database)
         logger.debug("Total number of testcase: {}".format(totalTasks))
 
         # pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
@@ -168,7 +168,7 @@ class TestEngine(object):
         
         taskArgs = (
             [cve, vulnObject]
-            for cve, vulnObject in self._vulnerabiliies_databse.items()
+            for cve, vulnObject in self._vulnerabilities_database.items()
         )
 
         # for testResult in track(

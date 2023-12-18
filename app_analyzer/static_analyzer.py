@@ -10,7 +10,7 @@ from androguard.core.bytecodes import dvm, apk
 from utils import export_to_txt
 
 abs_path = os.path.abspath(os.path.dirname(__file__))
-resource_path=os.path.join(abs_path,"resource")
+resource_path = os.path.join(abs_path,"resource")
 print(resource_path)
 logger = logging.getLogger('main')
 
