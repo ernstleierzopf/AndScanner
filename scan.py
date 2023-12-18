@@ -18,8 +18,8 @@ def scan(image_path: str, vendor: str, api_level: int):
     run_vulnerability_scan(extracted_image_path)
 
     # Run app analyzer.
-    # print("Stage 4: Running app analyzer")
-    # run_app_analyzer(extracted_image_path)
+    print("Stage 4: Running app analyzer")
+    run_app_analyzer(extracted_image_path)
 
 
 def single_scan(image_path: str):

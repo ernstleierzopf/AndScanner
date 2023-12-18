@@ -44,21 +44,24 @@ def classify(target):
     if target.name.endswith('.new.dat.br'):
         return 'brotli'
 
+    # interesting extensions.
+    if target.suffix in INTERESTING_EXT:
+        return target.suffix.strip('.')
+
     # archive file
     if target.suffix in ARCHIVE_EXT or file_mime_type == 'application/zip':
         return "archive"
 
-    # ext2/3/4 filesystem
-    if any(ext in file_type for ext in EXT_EXT):
-        return "extimg"
+    # special types.
+    if file_type == "data":
+        if target.name == 'payload.bin':
+            return 'otapayload'
 
-    # Android Sparse img
-    if "Android sparse image" in file_type:
-        return "sparseimg"
+        if target.suffix in ('.img', '.bin'):
+            return 'dataimg'
 
-    # Android boot img
-    if "Android bootimg" in file_type:
-        return "bootimg"
+        else:
+            return 'data'
 
     # elf
     if "ELF" in file_type:
@@ -68,18 +71,16 @@ def classify(target):
     if "ASCII" in file_type:
         return "text"
 
-    # special types.
-    if target.name == 'payload.bin':
-        return 'otapayload'
+    # Android boot img
+    if "Android bootimg" in file_type:
+        return "bootimg"
 
-    if target.suffix in ('.img', '.bin'):
-        return 'dataimg'
+    # Android Sparse img
+    if "Android sparse image" in file_type:
+        return "sparseimg"
 
-    if file_type == "data":
-        return 'data'
-
-    # interesting extensions.
-    if target.suffix in INTERESTING_EXT:
-        return target.suffix.strip('.')
+    # ext2/3/4 filesystem
+    if any(ext in file_type for ext in EXT_EXT):
+        return "extimg"
 
     return 'unknown'
