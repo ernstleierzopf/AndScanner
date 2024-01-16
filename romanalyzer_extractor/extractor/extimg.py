@@ -13,6 +13,23 @@ class ExtImgExtractor(Extractor):
         if not self.chmod(): 
             return
         
+        if self.target.name.endswith('_1.img'):
+            nr = 1
+            cmd = 'cat '
+            path = Path(self.target.parents[0] / self.target.name.replace('_1.img', '.img'))
+            if path.exists():
+                cmd += str(path) + ' '
+            path = Path(self.target.parents[0] / self.target.name)
+            while path.exists():
+                cmd += str(path) + ' '
+                nr += 1
+                path = Path(self.target.parents[0] / self.target.name.replace('_1.img', '_' + str(nr) + '.img'))
+            rm = cmd.replace('cat', 'rm')
+            cmd += '> ' + str(Path(self.target.parents[0] / self.target.name.replace('_1.img', '.img')))
+            execute(cmd)
+            execute(rm)
+            self.target = Path(self.target.parents[0] / self.target.name.replace('_1.img', '.img'))
+
         self.extracted = self.target.parents[0] / (self.target.name + '.extracted')
         
         if not self.extracted.exists(): 

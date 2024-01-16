@@ -23,17 +23,21 @@ class ArchiveExtractor(Extractor):
         elif suffix == '.gz':
             extract_cmd = 'gunzip -f -d "{}"'.format(abspath)
             self.extracted = self.target.with_suffix('')
-        elif suffix in ('.zip'):
-            extract_cmd = 'unzip -o "{}" -d "{}"'.format(abspath, self.extracted)
+        elif suffix == '.zip':
+            extract_cmd = 'unzip -P x -o "{}" -d "{}"'.format(abspath, self.extracted)
         elif suffix == '.7z':
             extract_cmd = '7za x {} -o{} -y'.format(abspath, self.extracted)
         elif suffix == ".ext4":
+            extract_cmd = '7z x {} -o{} -y'.format(abspath, self.extracted)
+        elif suffix == ".raw":
             extract_cmd = '7z x {} -o{} -y'.format(abspath, self.extracted)
         elif suffix == '.md5':
             extract_cmd = 'mkdir "{}"'.format(self.extracted)
             extract_cmd = extract_cmd+' && tar -xf "{}" -C "{}"'.format(abspath, self.extracted)
         elif suffix == '.APP' and str(abspath).find("UPDATE.APP")!=-1:
             extract_cmd = 'perl romanalyzer_extractor/tools/huawei_erofs/split_updata.pl "{}" "{}"'.format(abspath,self.extracted)
+        elif suffix == '.lz4':
+            extract_cmd = 'lz4 -f -d "{}" "{}"'.format(abspath,self.extracted)
         else:
             return None
         """
@@ -41,7 +45,6 @@ class ArchiveExtractor(Extractor):
             extract_cmd = 'tar -xvf {}'.format(abspath)
         """
         
-        #print(extract_cmd)
         execute(extract_cmd)
 
         if not self.extracted.exists(): 

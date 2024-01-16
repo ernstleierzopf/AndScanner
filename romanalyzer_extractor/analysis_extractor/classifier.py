@@ -3,7 +3,7 @@ from pathlib import Path
 from romanalyzer_extractor.utils import log
 
 EXT_EXT = ('ext2', 'ext3', 'ext4')
-ARCHIVE_EXT = ('.gz', '.tgz', '.bz2', '.xz', '.tar', '.zip', '.rar', '.7z','.md5','.APP')
+ARCHIVE_EXT = ('.gz', '.tgz', '.bz2', '.xz', '.tar', '.zip', '.rar', '.7z','.md5','.APP','.lz4')
 INTERESTING_EXT = ('.ko', '.so', '.dex', '.odex', '.apk', '.jar', '.ozip')
 
 
@@ -82,5 +82,8 @@ def classify(target):
     # ext2/3/4 filesystem
     if any(ext in file_type for ext in EXT_EXT):
         return "extimg"
+
+    if file_type == "OpenPGP Public Key":
+        return "ofp"
 
     return 'unknown'

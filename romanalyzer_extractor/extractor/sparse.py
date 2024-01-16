@@ -5,28 +5,39 @@ from romanalyzer_extractor.extractor.archive import ArchiveExtractor
 
 
 class SparseImgExtractor(Extractor):
-    
-    tool = Path('romanalyzer_extractor/tools/android-simg2img/simg2img').absolute()
+    def __init__(self, target):
+        super().__init__(target)
+        self.tool = Path('romanalyzer_extractor/tools/android-simg2img/simg2img').absolute()
 
     def extract(self):
         if not self.chmod(): return None
 
         self.log.debug("sparse image: {}".format(self.target))
-        self.log.debug("\tstart convert sparse img to ext4 img")
+        self.log.debug("\tstart convert sparse img to raw img")
         
-        ext4img = self.target.parents[0] / (self.target.name+'.ext4')
-        convert_cmd = '{simg2img} "{sparse_img}" "{output}"'.format(
+        if str(self.target).endswith("sparsechunk.0"):
+            convert_cmd = '{simg2img} {sparse_img} {output}'.format(
+                    simg2img=self.tool, 
+                    sparse_img=Path(str(self.target).replace("sparsechunk.0", "sparsechunk.*")), 
+                    output=Path(str(self.target).replace("_sparsechunk.0", ".raw")))
+            execute(convert_cmd)
+            raw_img = Path(str(self.target).replace("_sparsechunk.0", ".raw"))
+        elif "sparsechunk" in str(self.target):
+            return None
+        else:
+            raw_img = self.target.parents[0] / (self.target.name+'.raw')
+            convert_cmd = '{simg2img} "{sparse_img}" "{output}"'.format(
                     simg2img=self.tool, 
                     sparse_img=self.target.absolute(), 
-                    output=ext4img)
-        execute(convert_cmd)
+                    output=raw_img)
+            execute(convert_cmd)
 
-        self.log.debug("\tconverted ext4 image: {}".format(ext4img))
+            self.log.debug("\tconverted raw image: {}".format(raw_img))
 
-        extractor = ArchiveExtractor(ext4img)
+        extractor = ArchiveExtractor(raw_img)
         self.extracted = extractor.extract()
 
-        if not self.extracted.exists(): 
+        if self.extracted is None or not self.extracted.exists(): 
             self.log.warn("\tfailed to extract {}".format(self.target))
             return None
         else:

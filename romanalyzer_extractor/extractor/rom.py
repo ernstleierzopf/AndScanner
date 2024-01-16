@@ -13,6 +13,7 @@ from romanalyzer_extractor.extractor.ota import AndrOtaPayloadExtractor
 from romanalyzer_extractor.extractor.ozip import OZipExtractor
 from romanalyzer_extractor.extractor.sparse import SparseImgExtractor
 from romanalyzer_extractor.extractor.dir import DirExtractor
+from romanalyzer_extractor.extractor.ofp import OfpExtractor
 
 
 class ROMExtractor(Extractor):
@@ -29,7 +30,8 @@ class ROMExtractor(Extractor):
         'extimg': ExtImgExtractor,
         'brotli': BrotliExtractor,
         'newdat': NewDatExtractor,
-        'dir': DirExtractor
+        'dir': DirExtractor,
+        'ofp': OfpExtractor
     }
 
     def enqueue(self, target):

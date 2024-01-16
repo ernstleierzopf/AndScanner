@@ -4,10 +4,12 @@ import hashlib
 import logging
 import os
 import sys
+import os
 from pathlib import Path
 
 from androguard.core.bytecodes import dvm, apk
 from utils import export_to_txt
+import zipfile
 
 abs_path = os.path.abspath(os.path.dirname(__file__))
 resource_path = os.path.join(abs_path,"resource")
@@ -57,7 +59,11 @@ class StaticAnalyzer(object):
         #        there are already no zipmodule options.
         #        Would it cause some unexpectable fault? 
         # a = apk.APK(child.as_posix(), zipmodule=2)
-        a = apk.APK(apk_path.as_posix())
+        try:
+            a = apk.APK(apk_path.as_posix())
+        except zipfile.BadZipFile:
+            msg = "Bad magic number for file header - path: %s" % apk_path
+            raise zipfile.BadZipFile(msg)
         
         if not a.is_valid_APK():
             # It means the APK has a valid signature 
@@ -74,9 +80,13 @@ class StaticAnalyzer(object):
         if self.dex == '':
             print ('no dex')
         else:
-            for tmp_dex in self.dex:
-                tmp_vm = dvm.DalvikVMFormat(tmp_dex)
-                self.vm.append(tmp_vm)
+            try:
+                for tmp_dex in self.dex:
+                    tmp_vm = dvm.DalvikVMFormat(tmp_dex)
+                    self.vm.append(tmp_vm)
+            except zipfile.BadZipFile:
+                msg = "Bad magic number for file header - path: %s" % apk_path
+                raise zipfile.BadZipFile(msg)
 
         self.max_sdk_version = self.target.get_max_sdk_version()
         self.min_sdk_version = self.target.get_min_sdk_version()
@@ -87,7 +97,7 @@ class StaticAnalyzer(object):
 
 #        os.system('apktool d ' + self.target_path.as_posix() + ' -o ' + self.apk_report.as_posix() + '/apktool_tmp')
 #        print self.target_path.stem
-        if not self.apk_report.exists():
+        if not os.path.exists(self.apk_report):
             self.apk_report.mkdir(parents=True)
         return a
 
@@ -322,6 +332,7 @@ class StaticAnalyzer(object):
             txt_write_line.append("app name: {}".format(self.target.get_app_name()))
             if self.target.get_app_name() == None:
                 err_write_line.append('this app has no app name')
+
         except Exception as e:
             print ('app name error')
             print (e)

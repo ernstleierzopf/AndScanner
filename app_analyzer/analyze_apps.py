@@ -2,6 +2,7 @@
 #encoding: utf-8
 import sys
 import logging
+import os
 from pathlib import Path
 from optparse import OptionParser
 
@@ -58,7 +59,7 @@ def func(input,report):
     logger.debug("The provided APK file is: %s" % log_input.absolute())
 
     report = Path(report)
-    if not report.exists():
+    if not os.path.isfile(report):
         try:
             report.mkdir(parents=True)
         except Exception as e:
@@ -114,23 +115,23 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(-1)
 
-    if options.report:  
+    if options.report:
         options.report = Path(options.report)
 #        print options.report
-        if not options.report.exists():
+        if not os.path.isfile(options.report):
             try:
                 options.report.mkdir(parents=True)
             except Exception as e:
-                print (str(e))
+                print(str(e))
         logger.debug("The specified report output folder is: %s" % options.report.absolute())
     else:
         options.report = Path('report/')
-        if not options.report.exists():
+        if not os.path.isfile(options.report):
             options.report.mkdir(parents=True)
 
     if options.screenshot:  
         options.screenshot = Path(options.screenshot)
-        if not options.screenshot.exists():
+        if not os.path.isfile(options.screenshot):
             options.screenshot.mkdir(parents=True)
         logger.debug("The specified screenshot output path is: %s" % options.screenshot.absolute())
 

@@ -13,6 +13,10 @@ def initialize_attributes(target):
     # Extracted Path
     if _target.suffix == '.ozip':
         local_extract = _target.with_suffix('.zip').name + '.extracted'
+    elif _target.name.endswith('.img.lz4'):
+        local_extract = _target.name.replace('.img.lz4', '.img')
+    elif _target.name.endswith('.bin.lz4'):
+        local_extract = _target.name.replace('.bin.lz4', '.bin')
     else:
         local_extract = _target.name + '.extracted'
 

@@ -74,6 +74,19 @@ def transform_path(extracted_image_path: str):
     return str2 + '/'
 
 
+def get_extracted_image_dir_path(image_path_input: str, vendor: str):
+    image_path = Path(image_path_input).absolute()
+    parent_dir_path = image_path.parent
+    if vendor == "zte":
+        extracted_dir_name = f"ZTE_Rom_{str(time.time())}.extracted"
+        extracted_image_dir_path = parent_dir_path / extracted_dir_name
+        return ROMExtractor(extracted_image_dir_path).extracated
+    elif vendor == "huawei":
+        return ROMExtractor(os.path.abspath(image_path)).extracted
+    image_path = Path(image_path_input).absolute()
+    return str(ROMExtractor(image_path).extracted) + "/"
+
+
 def extract_zip(image_path_input: str, vendor: str):
     # Create a Path object for the image path and convert it to the absolute path.
     image_path = Path(image_path_input).absolute()
@@ -193,6 +206,11 @@ def extract_image(image_path: str, vendor: str):
         # raise Exception("image path points to a directory, not a zip file.")
         return image_path
 
+    extracted_image_path = get_extracted_image_dir_path(image_path, vendor)
+    if os.path.exists(extracted_image_path):
+        print("Extracted image path already exists at %s. Skipping.." % extracted_image_path)
+        return extracted_image_path
+
     # Remove any previously existing extracted directory.
     _image_path = Path(f"{image_path}.extracted").absolute()
     if _image_path.exists():
@@ -240,7 +258,10 @@ def run_app_analyzer(image_path: str, extracted_image_path: str):
                 report_path = report_dir / path_str.replace('/', '_')
 
                 # Build APK file analysis command.
-                command_str = f"python ./app_analyzer/analyze_apps.py -i {path_str} -r {report_path}"
+                command_str = f"python3 ./app_analyzer/analyze_apps.py -i {path_str} -r {report_path}"
 
                 # Execute APK file analysis command.
-                os.system(command_str)
+                return_code = os.system(command_str)
+
+                if return_code == 2:
+                    sys.exit(2)
