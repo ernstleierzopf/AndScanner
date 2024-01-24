@@ -10,16 +10,17 @@ def scan(image_path: str, vendor: str):#, api_level: int):
     #validate(api_level)
 
     # Extracting image.
-    print("Stage 2: Extracting image")
+    #print("Stage 2: Extracting image")
+    print("Extracting image")
     extracted_image_path = extract_image(image_path, vendor)
 
     # Run vulnerability scan.
-    print("Stage 3: Running vulnerability scans")
-    run_vulnerability_scan(image_path, extracted_image_path)
+    #print("Stage 3: Running vulnerability scans")
+    #run_vulnerability_scan(image_path, extracted_image_path)
 
     # Run app analyzer.
-    print("Stage 4: Running app analyzer")
-    run_app_analyzer(image_path, extracted_image_path)
+    #print("Stage 4: Running app analyzer")
+    #run_app_analyzer(image_path, extracted_image_path)
 
 
 def single_scan(image_path: str):
