@@ -22,7 +22,6 @@ def initialize_attributes(target, target_path):
 
     _extracted = _target.parent / local_extract
     if target_path is not None and not str(_extracted).startswith(target_path):
-        print(_extracted, Path(target_path).absolute() / local_extract, str(_extracted).startswith(target_path))
         _extracted = Path(target_path).absolute() / local_extract
 
     return _target, _extracted
