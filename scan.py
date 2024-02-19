@@ -2,6 +2,7 @@ import os
 import sys
 import json
 from util import validate, extract_image, run_vulnerability_scan, run_app_analyzer
+from pathlib import Path
 
 
 def scan(image_path: str, vendor: str, extraction_path: str):#, api_level: int):
@@ -33,6 +34,7 @@ def single_scan(image_path: str):
         extraction_path = sys.argv[3]
     except Exception:
         pass
+    extraction_path = str(Path(extraction_path).absolute())
     if extraction_path is not None and not os.path.exists(extraction_path):
         raise Exception(f"{extraction_path} does not exist!")
 
