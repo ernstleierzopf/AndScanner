@@ -56,7 +56,7 @@ class ROMExtractor(Extractor):
 
             try:
                 print(guess)
-                self.enqueue(self.extractor_map[guess](process_item).extract())
+                self.enqueue(self.extractor_map[guess](process_item, self.target_path).extract())
             except Exception as e:
                 self.log.exception("failed to extract {} ... skip it.".format(process_item))
                 self.log.exception(e)

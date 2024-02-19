@@ -5,8 +5,8 @@ from romanalyzer_extractor.extractor.base import Extractor
 
 
 class AndrOtaPayloadExtractor(Extractor):
-    def __init__(self, target):
-        super().__init__(target)
+    def __init__(self, target, target_path=None):
+        super().__init__(target, target_path)
         self.tool = Path('romanalyzer_extractor/tools/extract_android_ota_payload/extract_android_ota_payload.py').absolute()
 
     def extract(self):

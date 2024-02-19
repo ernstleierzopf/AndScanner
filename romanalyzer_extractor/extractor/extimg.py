@@ -5,8 +5,8 @@ from romanalyzer_extractor.extractor.base import Extractor
 
 
 class ExtImgExtractor(Extractor):
-    def __init__(self, target):
-        super().__init__(target)
+    def __init__(self, target, target_path=None):
+        super().__init__(target, target_path)
         self.tool = Path('romanalyzer_extractor/tools/extfstools/ext2rd').absolute()
 
     def extract(self):

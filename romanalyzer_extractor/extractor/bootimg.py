@@ -4,8 +4,8 @@ from romanalyzer_extractor.extractor.base import Extractor
 
 
 class BootImgExtractor(Extractor):
-    def __init__(self, target):
-        super().__init__(target)
+    def __init__(self, target, target_path=None):
+        super().__init__(target, target_path)
         self.tool = Path("romanalyzer_extractor/tools/bootimg_extraction/unpack_bootimg.py").absolute()
 
     def extract(self):

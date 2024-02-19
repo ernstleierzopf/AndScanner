@@ -74,20 +74,22 @@ def transform_path(extracted_image_path: str):
     return str2 + '/'
 
 
-def get_extracted_image_dir_path(image_path_input: str, vendor: str):
+def get_extracted_image_dir_path(image_path_input: str, vendor: str, extraction_path: str):
+    # image_path = Path(image_path_input).absolute()
+    # parent_dir_path = image_path.parent
+    # if vendor == "zte":
+    #     extracted_dir_name = f"ZTE_Rom_{str(time.time())}.extracted"
+    #     extracted_image_dir_path = parent_dir_path / extracted_dir_name
+    #     return ROMExtractor(extracted_image_dir_path).extracated
+    # elif vendor == "huawei":
+    #     return ROMExtractor(os.path.abspath(image_path)).extracted
     image_path = Path(image_path_input).absolute()
-    parent_dir_path = image_path.parent
-    if vendor == "zte":
-        extracted_dir_name = f"ZTE_Rom_{str(time.time())}.extracted"
-        extracted_image_dir_path = parent_dir_path / extracted_dir_name
-        return ROMExtractor(extracted_image_dir_path).extracated
-    elif vendor == "huawei":
-        return ROMExtractor(os.path.abspath(image_path)).extracted
-    image_path = Path(image_path_input).absolute()
+    if extraction_path is not None:
+        image_path = Path(f"{extraction_path}/{image_path.name}")
     return str(ROMExtractor(image_path).extracted) + "/"
 
 
-def extract_zip(image_path_input: str, vendor: str):
+def extract_zip(image_path_input: str, vendor: str, extraction_path: str):
     # Create a Path object for the image path and convert it to the absolute path.
     image_path = Path(image_path_input).absolute()
 
@@ -188,13 +190,13 @@ def extract_zip(image_path_input: str, vendor: str):
         image_path = Path(image_path_input).absolute()
 
         # Extract image.
-        extracted_image_dir_path = ROMExtractor(image_path).extract()
+        extracted_image_dir_path = ROMExtractor(image_path, extraction_path).extract()
 
         print(f"{extracted_image_dir_path}/")
         return str(extracted_image_dir_path) + '/'
 
 
-def extract_image(image_path: str, vendor: str):
+def extract_image(image_path: str, vendor: str, extraction_path: str):
     """
     :path: path to the image
     :vendor: name of the image vendor
@@ -206,18 +208,18 @@ def extract_image(image_path: str, vendor: str):
         # raise Exception("image path points to a directory, not a zip file.")
         return image_path
 
-    extracted_image_path = get_extracted_image_dir_path(image_path, vendor)
+    extracted_image_path = get_extracted_image_dir_path(image_path, vendor, extraction_path)
     if os.path.exists(extracted_image_path):
         print("Extracted image path already exists at %s. Skipping.." % extracted_image_path)
         return extracted_image_path
 
     # Remove any previously existing extracted directory.
-    _image_path = Path(f"{image_path}.extracted").absolute()
-    if _image_path.exists():
-        shutil.rmtree(_image_path)
+    # _image_path = Path(f"{image_path}.extracted").absolute()
+    # if _image_path.exists():
+    #     shutil.rmtree(_image_path)
 
     # Extract the image zip, if required.
-    extracted_image_path = extract_zip(image_path, vendor)
+    extracted_image_path = extract_zip(image_path, vendor, extraction_path)
 
     return extracted_image_path
 

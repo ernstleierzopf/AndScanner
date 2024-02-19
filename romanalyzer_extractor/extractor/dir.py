@@ -3,7 +3,7 @@ from pathlib import Path
 
 class DirExtractor(object):
 
-    def __init__(self, target):
+    def __init__(self, target, target_path=None):
         self.target = Path(target)
     
     def extract(self):

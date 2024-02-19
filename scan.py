@@ -4,7 +4,7 @@ import json
 from util import validate, extract_image, run_vulnerability_scan, run_app_analyzer
 
 
-def scan(image_path: str, vendor: str):#, api_level: int):
+def scan(image_path: str, vendor: str, extraction_path: str):#, api_level: int):
     # Validate API level.
     #print("Stage 1: Validating Android image API level")
     #validate(api_level)
@@ -12,7 +12,7 @@ def scan(image_path: str, vendor: str):#, api_level: int):
     # Extracting image.
     #print("Stage 2: Extracting image")
     print("Extracting image")
-    extracted_image_path = extract_image(image_path, vendor)
+    extracted_image_path = extract_image(image_path, vendor, extraction_path)
 
     # Run vulnerability scan.
     #print("Stage 3: Running vulnerability scans")
@@ -24,10 +24,17 @@ def scan(image_path: str, vendor: str):#, api_level: int):
 
 
 def single_scan(image_path: str):
+    extraction_path = None
     try:
         vendor = sys.argv[2]
     except Exception:
         raise Exception("Missing vendor name")
+    try:
+        extraction_path = sys.argv[3]
+    except Exception:
+        pass
+    if extraction_path is not None and not os.path.exists(extraction_path):
+        raise Exception(f"{extraction_path} does not exist!")
 
     #try:
     #    api_level = abs(int(sys.argv[3]))
@@ -43,7 +50,7 @@ def single_scan(image_path: str):
     #      f"API Level : {api_level}",
           sep="\n")
 
-    scan(image_path, vendor)#, api_level)
+    scan(image_path, vendor, extraction_path)#, api_level)
 
 
 def batch_scan(scan_queue: []):

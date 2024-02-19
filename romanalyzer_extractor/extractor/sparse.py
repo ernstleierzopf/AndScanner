@@ -5,8 +5,8 @@ from romanalyzer_extractor.extractor.archive import ArchiveExtractor
 
 
 class SparseImgExtractor(Extractor):
-    def __init__(self, target):
-        super().__init__(target)
+    def __init__(self, target, target_path=None):
+        super().__init__(target, target_path)
         self.tool = Path('romanalyzer_extractor/tools/android-simg2img/simg2img').absolute()
 
     def extract(self):
