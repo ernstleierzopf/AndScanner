@@ -26,7 +26,7 @@ class AndrOtaPayloadExtractor(Extractor):
 
         if self.extracted.exists():
             self.log.debug(f"\textracted ota payload.bin to: {self.extracted}")
-
+            payload.unlink()
         else:
             self.log.warning(f"\tfailed to extract {self.extracted} using unzip")
             return None

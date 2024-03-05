@@ -19,7 +19,8 @@ def classify(target):
     target = Path(target)
 
     if not target.exists():
-        log.warn(f"Target path does not exist: {target}")
+        if not target.is_symlink() and not target.name.startswith("super."):  # allow broken symlinks
+            log.warn(f"Target path does not exist: {target}")
         return None
 
     # Get the file system description using the python-magic.
@@ -57,11 +58,20 @@ def classify(target):
         if target.name == 'payload.bin':
             return 'otapayload'
 
-        if target.suffix in ('.img', '.bin'):
+        if target.suffix in ('.img', '.raw'):  # just try extracting as EROFS fs - better than doing nothing.  # and 'UPDATE.APP' in str(target):
+            return 'erofsimg'
+
+        if target.suffix in ('.img', '.bin', '.raw'):
             return 'dataimg'
+
+        if target.suffix == '.pac':
+            return 'pac'
 
         else:
             return 'data'
+
+    if "F2FS" in file_type:
+        return "f2fs"
 
     # elf
     if "ELF" in file_type:

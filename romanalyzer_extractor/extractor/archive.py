@@ -32,18 +32,17 @@ class ArchiveExtractor(Extractor):
         elif suffix == ".raw":
             extract_cmd = '7z x {} -o{} -y'.format(abspath, self.extracted)
         elif suffix == '.md5':
-            extract_cmd = 'mkdir "{}"'.format(self.extracted)
-            extract_cmd = extract_cmd+' && tar -xf "{}" -C "{}"'.format(abspath, self.extracted)
+            if self.target.name.endswith('tar.md5'):
+                extract_cmd = 'mkdir "{}"'.format(self.extracted)
+                extract_cmd = extract_cmd+' && tar -xf "{}" -C "{}"'.format(abspath, self.extracted)
+            else:
+                return None
         elif suffix == '.APP' and str(abspath).find("UPDATE.APP")!=-1:
             extract_cmd = 'perl romanalyzer_extractor/tools/huawei_erofs/split_updata.pl "{}" "{}"'.format(abspath,self.extracted)
         elif suffix == '.lz4':
             extract_cmd = 'lz4 -f -d "{}" "{}"'.format(abspath,self.extracted)
         else:
             return None
-        """
-        elif suffix == ".tar.md5":
-            extract_cmd = 'tar -xvf {}'.format(abspath)
-        """
         
         execute(extract_cmd)
 
@@ -52,4 +51,6 @@ class ArchiveExtractor(Extractor):
             return None
         else:
             self.log.debug("\textracted path: {}".format(self.extracted))
+            if not self.is_base_file and abspath.exists():
+                abspath.unlink()
             return self.extracted

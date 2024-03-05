@@ -37,7 +37,7 @@ class ExtImgExtractor(Extractor):
 
         # Parts of extraction command.
         extfstool = self.tool
-        extimg = self.target
+        extimg = self.target.absolute()
         outdir = self.extracted
 
         # Build extraction command.
@@ -48,6 +48,7 @@ class ExtImgExtractor(Extractor):
 
         if self.extracted and self.extracted.exists(): 
             self.log.debug(f"\textracted path: {self.extracted}")
+            extimg.unlink()
             return self.extracted
         else:
             self.log.warning(f"\tfailed to extract {self.target}")

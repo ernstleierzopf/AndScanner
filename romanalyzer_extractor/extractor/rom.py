@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from romanalyzer_extractor.analysis_extractor.classifier import classify
@@ -14,6 +15,9 @@ from romanalyzer_extractor.extractor.ozip import OZipExtractor
 from romanalyzer_extractor.extractor.sparse import SparseImgExtractor
 from romanalyzer_extractor.extractor.dir import DirExtractor
 from romanalyzer_extractor.extractor.ofp import OfpExtractor
+from romanalyzer_extractor.extractor.f2fs import F2fsImgExtractor
+from romanalyzer_extractor.extractor.pac import PacExtractor
+from romanalyzer_extractor.extractor.erofsimg import ErofsImgExtractor
 
 
 class ROMExtractor(Extractor):
@@ -31,7 +35,10 @@ class ROMExtractor(Extractor):
         'brotli': BrotliExtractor,
         'newdat': NewDatExtractor,
         'dir': DirExtractor,
-        'ofp': OfpExtractor
+        'ofp': OfpExtractor,
+        'f2fs': F2fsImgExtractor,
+        'pac': PacExtractor,
+        'erofsimg': ErofsImgExtractor
     }
 
     def enqueue(self, target):
@@ -43,10 +50,14 @@ class ROMExtractor(Extractor):
     def extract(self):
         self.log.debug('add {} to process queue'.format(self.target))
         self.process_queue.append(self.target)
-        
+
+        is_base_file = True
         while self.process_queue:
             
             process_item = self.process_queue.pop()
+            if not os.access(process_item, os.R_OK):
+                self.log.warn("\tNo read permissions for {}".format(process_item))
+                continue
             guess = classify(process_item)
             
             self.log.debug("\t 000000 {}  {}".format(process_item, guess))
@@ -56,7 +67,11 @@ class ROMExtractor(Extractor):
 
             try:
                 print(guess)
-                self.enqueue(self.extractor_map[guess](process_item, self.target_path).extract())
+                extractor = self.extractor_map[guess](process_item, self.target_path)
+                if is_base_file:
+                    extractor.is_base_file = True
+                    is_base_file = False
+                self.enqueue(extractor.extract())
             except Exception as e:
                 self.log.exception("failed to extract {} ... skip it.".format(process_item))
                 self.log.exception(e)

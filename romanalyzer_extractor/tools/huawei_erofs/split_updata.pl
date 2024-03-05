@@ -32,7 +32,7 @@ $|++;
 # Unsigned integers are 4 bytes.
 use constant UINT_SIZE => 4;
  
-# If a filename wasn't specified on the commmand line then
+# If a filename wasn't specified on the command line then
 # assume the file to be unpacked is under current directory. 
 my $FILENAME = undef;
 my $matching = '.';
@@ -118,6 +118,10 @@ sub dump_file {
     $sourceCRC=slimhexdump($buffer);
     
     my ($fileName) = "$fileType" . ".img";
+    if (-f "$BASEPATH$fileName") {
+      rename("$BASEPATH$fileName", "$BASEPATH$fileType" . ".img_sparsechunk.0");
+      $fileName = "$fileType" . ".img_sparsechunk.1";
+    }
     if ($fileName =~ /$matching/) {
       print "extracting $fileName ($fileSize)...";
     

@@ -1,0 +1,10 @@
+#CFLAGS=-O3 -Wall
+CFLAGS=-g -ggdb -Wall
+#LDLIBS=-l
+
+all: pacextractor
+
+clean:
+	rm -f pacextractor *.o version.h
+
+.PHONY:	clean all

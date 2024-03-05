@@ -33,6 +33,7 @@ class Extractor(object):
         self.target, self.extracted = initialize_attributes(target, target_path)
         self.tool = Path()
         self.log = logging.getLogger('extractor')
+        self.is_base_file = False
 
     def extract(self):
         raise NotImplementedError
