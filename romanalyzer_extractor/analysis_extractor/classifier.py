@@ -77,6 +77,9 @@ def classify(target):
     if "ELF" in file_type:
         return "elf"
 
+    if "EROFS" in file_type:
+        return "erofsimg"
+
     # ascii
     if "ASCII" in file_type:
         return "text"
