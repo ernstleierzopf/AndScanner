@@ -17,12 +17,11 @@ class BootImgExtractor(Extractor):
 
         # Parts of extraction command.
         workdir = self.target.parent
-        split_boot = self.tool
         boot_img = self.target.absolute()
         self.extracted = workdir / self.target.stem
 
         # Build extraction command.
-        extract_cmd = f"cd {workdir} && {split_boot} --boot_img \"{boot_img}\" --out \"{self.extracted}\""
+        extract_cmd = f"cd \"{workdir}\" && {self.tool} --boot_img \"{boot_img}\" --out \"{self.extracted}\""
 
         # Perform extraction.
         execute(extract_cmd)
