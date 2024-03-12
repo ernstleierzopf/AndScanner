@@ -24,9 +24,9 @@ class SparseImgExtractor(Extractor):
         self.log.debug("\tstart convert sparse img to raw img")
         
         if self.target.name.endswith("sparsechunk.0"):
-            convert_cmd = '{simg2img} "{sparse_img}" "{output}"'.format(
+            convert_cmd = '{simg2img} "{sparse_img}".* "{output}"'.format(
                     simg2img=self.tool, 
-                    sparse_img=Path(str(self.target).replace("sparsechunk.0", "sparsechunk.*")), 
+                    sparse_img=Path(str(self.target).replace("sparsechunk.0", "sparsechunk")),
                     output=Path(str(self.target).replace("_sparsechunk.0", ".raw")))
             execute(convert_cmd)
             raw_img = Path(str(self.target).replace("_sparsechunk.0", ".raw"))
