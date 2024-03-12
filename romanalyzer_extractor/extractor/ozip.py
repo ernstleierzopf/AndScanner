@@ -5,8 +5,10 @@ from romanalyzer_extractor.extractor.archive import ArchiveExtractor
 
 
 class OZipExtractor(Extractor):
+    def __init__(self, target, target_path=None):
+        super().__init__(target, target_path)
+        self.tool = Path('romanalyzer_extractor/tools/oppo_ozip_decrypt/ozipdecrypt.py').absolute()
 
-    tool = Path('romanalyzer_extractor/tools/oppo_ozip_decrypt/ozipdecrypt.py').absolute()
     def extract(self):
         self.log.debug("OZip extract target: {}".format(self.target))
         self.log.debug("\tstart extract archive.")

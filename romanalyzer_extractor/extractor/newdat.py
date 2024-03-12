@@ -5,7 +5,9 @@ from romanalyzer_extractor.extractor.extimg import ExtImgExtractor
 
 
 class NewDatExtractor(Extractor):
-    tool = Path('romanalyzer_extractor/tools/sdat2img/sdat2img.py').absolute()
+    def __init__(self, target, target_path=None):
+        super().__init__(target, target_path)
+        self.tool = Path('romanalyzer_extractor/tools/sdat2img/sdat2img.py').absolute()
 
     def extract(self):
         self.log.debug("New.dat extract: {}".format(self.target))
