@@ -5,7 +5,9 @@ from romanalyzer_extractor.extractor.newdat import NewDatExtractor
 
 
 class BrotliExtractor(Extractor):
-    tool = Path('romanalyzer_extractor/tools/brotli/brotli').absolute()
+    def __init__(self, target, target_path=None):
+        super().__init__(target, target_path)
+        self.tool = Path('romanalyzer_extractor/tools/brotli/brotli').absolute()
 
     def extract(self):
         self.log.debug("Brotli extract: {}".format(self.target))
