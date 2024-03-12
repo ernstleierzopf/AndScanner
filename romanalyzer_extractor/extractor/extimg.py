@@ -12,7 +12,7 @@ class ExtImgExtractor(Extractor):
     def extract(self):
         if not self.chmod(): 
             return
-        
+
         if self.target.name.endswith('_1.img'):
             nr = 1
             cmd = 'cat '
@@ -41,7 +41,7 @@ class ExtImgExtractor(Extractor):
         outdir = self.extracted
 
         # Build extraction command.
-        extract_cmd = f"{extfstool} {extimg} ./:{outdir}"
+        extract_cmd = f"{extfstool} \"{extimg}\" ./:\"{outdir}\""
 
         # Perform extraction.
         execute(extract_cmd)

@@ -14,12 +14,11 @@ class AndrOtaPayloadExtractor(Extractor):
         self.log.debug("\tstart extract payload.bin.")
 
         # Extraction command parts.
-        extract_script = self.tool
         payload = self.target.absolute()
         extracted_dir = self.extracted
 
         # Build extraction command.
-        convert_cmd = f"python3 {extract_script} {payload} {extracted_dir}"
+        convert_cmd = f"python3 {self.tool} \"{payload}\" \"{extracted_dir}\""
 
         # Extract OTA image.
         execute(convert_cmd)

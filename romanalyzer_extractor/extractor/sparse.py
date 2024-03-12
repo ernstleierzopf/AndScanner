@@ -24,7 +24,7 @@ class SparseImgExtractor(Extractor):
         self.log.debug("\tstart convert sparse img to raw img")
         
         if self.target.name.endswith("sparsechunk.0"):
-            convert_cmd = '{simg2img} {sparse_img} {output}'.format(
+            convert_cmd = '{simg2img} "{sparse_img}" "{output}"'.format(
                     simg2img=self.tool, 
                     sparse_img=Path(str(self.target).replace("sparsechunk.0", "sparsechunk.*")), 
                     output=Path(str(self.target).replace("_sparsechunk.0", ".raw")))
@@ -46,7 +46,7 @@ class SparseImgExtractor(Extractor):
             for file in os.listdir(dir_path):
                 if file.startswith("super.") and file not in super_files:
                     os.unlink(os.path.join(dir_path, file))
-            convert_cmd = '{simg2img} {super} {output}'.format(
+            convert_cmd = '{simg2img} "{super}" "{output}"'.format(
                 simg2img=self.tool,
                 super=Path(str(self.target.parents[0] / "super.*")),
                 output=self.extracted)

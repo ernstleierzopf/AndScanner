@@ -17,7 +17,7 @@ class OfpExtractor(Extractor):
 
         abspath = self.target.absolute()
         
-        extract_cmd = 'python3 {} "{}" "{}"'.format(self.tool,abspath,self.extracted)
+        extract_cmd = 'python3 {} "{}" "{}"'.format(self.tool, abspath, self.extracted)
         try:
             execute(extract_cmd)
         except Exception:
