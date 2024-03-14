@@ -12,7 +12,7 @@ class NewDatExtractor(Extractor):
     def extract(self):
         self.log.debug("New.dat extract: {}".format(self.target))
         workdir = self.target.parents[0]
-        merged_target = workdir / 'merged_' + self.target.name
+        merged_target = workdir / 'merged_' + str(self.target.name)
         merge_cmd = 'cat {target}* > {merged_target}'.format(target=self.target, merged_target=merged_target)
         execute(merge_cmd)
 
