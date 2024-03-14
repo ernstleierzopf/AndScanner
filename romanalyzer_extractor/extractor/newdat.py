@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from romanalyzer_extractor.utils import execute
 from romanalyzer_extractor.extractor.base import Extractor
@@ -12,8 +13,14 @@ class NewDatExtractor(Extractor):
     def extract(self):
         self.log.debug("New.dat extract: {}".format(self.target))
         workdir = self.target.parents[0]
-        merged_target = workdir / 'merged_' + str(self.target.name)
-        merge_cmd = 'cat {target}* > {merged_target}'.format(target=self.target, merged_target=merged_target)
+        merged_target = workdir / "{}".format('merged_' + self.target.name)
+        target_files = []
+        dir_path = str(self.target.parents[0])
+        for file in sorted(os.listdir(dir_path)):
+            if file.startswith(self.target.name) and (file == self.target.name or (file.split(".")[-1].isnumeric() and file == self.target.name + "." + file.split(".")[-1])):
+                target_files.append(os.path.join(dir_path, file))
+        target_files = target_files[0] + " " + " ".join(sorted(target_files[1:], key=lambda x: int(x.split(".")[-1])))
+        merge_cmd = 'cat {target} > {merged_target}'.format(target=target_files.strip(), merged_target=merged_target)
         execute(merge_cmd)
 
         transfer_list = workdir / "{}".format(self.target.name.replace('.new.dat', '.transfer.list'))
@@ -29,13 +36,13 @@ class NewDatExtractor(Extractor):
         )
         execute(convert_cmd)
 
-        if merged_target.stat().st_size() != output_system_img.stat().st_size():
+        if merged_target.stat().st_size != output_system_img.stat().st_size:
             self.log.warn("\tmerged file size does not match output file size (file: {}, expected: {}, actual: {})".format(
-                self.target, merged_target.stat().st_size(), output_system_img.stat().st_size()))
+                self.target, merged_target.stat().st_size, output_system_img.stat().st_size))
         merged_target.unlink()
         dir_path = str(self.target.parents[0])
         for file in os.listdir(dir_path):
-            if file.startswith(self.target.name):
+            if file.startswith(self.target.name) and (file == self.target.name or (file.endswith('.new.dat.' + file.split('.')[-1]) and file.split('.')[-1].isnumeric())):
                 os.unlink(os.path.join(dir_path, file))
 
         extractor = ExtImgExtractor(output_system_img)
