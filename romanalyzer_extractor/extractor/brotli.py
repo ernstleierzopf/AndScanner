@@ -25,6 +25,7 @@ class BrotliExtractor(Extractor):
         self.extracted = extractor.extract()
         if self.extracted and self.extracted.exists(): 
             self.log.debug("\textracted path: {}".format(self.extracted))
+            self.target.unlink()
             return self.extracted
         else:
             self.log.warn("\tfailed to extract {}".format(self.target))
