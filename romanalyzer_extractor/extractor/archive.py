@@ -26,9 +26,9 @@ class ArchiveExtractor(Extractor):
         #elif suffix == '.zip':
         #    extract_cmd = 'unzip -P x -o "{}" -d "{}"'.format(abspath, self.extracted)
         elif suffix in ('.7z', '.zip', '.ext4'):
-            extract_cmd = '7z x "{}" -o"{}" -y'.format(abspath, self.extracted)
+            extract_cmd = '7z -p x "{}" -o"{}" -y'.format(abspath, self.extracted)
         elif suffix == ".raw":
-            extract_cmd = '7z x "{}" -o"{}" -y'.format(abspath, self.extracted)
+            extract_cmd = '7z -p x "{}" -o"{}" -y'.format(abspath, self.extracted)
         elif suffix == '.md5':
             if self.target.name.endswith('tar.md5'):
                 extract_cmd = 'mkdir "{}"'.format(self.extracted)
