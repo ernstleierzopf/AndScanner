@@ -4,7 +4,7 @@ from romanalyzer_extractor.utils import log
 
 EXT_EXT = ('ext2', 'ext3', 'ext4')
 ARCHIVE_EXT = ('.gz', '.tgz', '.bz2', '.xz', '.tar', '.zip', '.rar', '.7z','.md5','.APP','.lz4')
-INTERESTING_EXT = ('.ko', '.so', '.dex', '.odex', '.apk', '.jar', '.ozip')
+INTERESTING_EXT = ('.ko', '.so', '.dex', '.odex', '.apk', '.jar', '.ozip', '.apex', '.vdex')
 
 
 def get_file_type(target: Path, mime=False):

@@ -5,7 +5,7 @@ from util import validate, extract_image, run_vulnerability_scan, run_app_analyz
 from pathlib import Path
 
 
-def scan(image_path: str, vendor: str, extraction_path: str):#, api_level: int):
+def scan(image_path: str, extraction_path: str):#, api_level: int):
     # Validate API level.
     #print("Stage 1: Validating Android image API level")
     #validate(api_level)
@@ -13,7 +13,7 @@ def scan(image_path: str, vendor: str, extraction_path: str):#, api_level: int):
     # Extracting image.
     #print("Stage 2: Extracting image")
     print("Extracting image")
-    extracted_image_path = extract_image(image_path, vendor, extraction_path)
+    extracted_image_path = extract_image(image_path, extraction_path)
 
     # Run vulnerability scan.
     #print("Stage 3: Running vulnerability scans")
@@ -27,11 +27,7 @@ def scan(image_path: str, vendor: str, extraction_path: str):#, api_level: int):
 def single_scan(image_path: str):
     extraction_path = None
     try:
-        vendor = sys.argv[2]
-    except Exception:
-        raise Exception("Missing vendor name")
-    try:
-        extraction_path = sys.argv[3]
+        extraction_path = sys.argv[2]
     except Exception:
         pass
     extraction_path = str(Path(extraction_path).absolute())
@@ -48,11 +44,10 @@ def single_scan(image_path: str):
     # Begin scan.
     print("Scanning image")
     print(f"Image path: {image_path}",
-          f"Vendor    : {vendor}",
     #      f"API Level : {api_level}",
           sep="\n")
 
-    scan(image_path, vendor, extraction_path)#, api_level)
+    scan(image_path, extraction_path)#, api_level)
 
 
 def batch_scan(scan_queue: []):
@@ -64,18 +59,13 @@ def batch_scan(scan_queue: []):
             raise Exception(f"Missing image path for image {index}")
 
         try:
-            vendor = image["vendor"]
-        except Exception:
-            raise Exception(f"Missing vendor name for image {index}")
-
-        try:
             api_level = image["api_level"]
         except Exception:
             raise Exception(f"Missing Android API level for image {index}")
 
         # Start scan.
         print(f"Scanning image {index + 1}")
-        scan(image_path, vendor, api_level)
+        scan(image_path, api_level)
 
 
 if __name__ == "__main__":

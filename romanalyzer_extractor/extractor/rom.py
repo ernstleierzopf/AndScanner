@@ -18,6 +18,8 @@ from romanalyzer_extractor.extractor.ofp import OfpExtractor
 from romanalyzer_extractor.extractor.f2fs import F2fsImgExtractor
 from romanalyzer_extractor.extractor.pac import PacExtractor
 from romanalyzer_extractor.extractor.erofsimg import ErofsImgExtractor
+from romanalyzer_extractor.extractor.metadata import MetadataExtractor
+
 
 
 class ROMExtractor(Extractor):
@@ -38,7 +40,9 @@ class ROMExtractor(Extractor):
         'ofp': OfpExtractor,
         'f2fs': F2fsImgExtractor,
         'pac': PacExtractor,
-        'erofsimg': ErofsImgExtractor
+        'erofsimg': ErofsImgExtractor,
+        'elf': MetadataExtractor, 'ko': MetadataExtractor, 'so': MetadataExtractor, 'dex': MetadataExtractor, 'odex': MetadataExtractor,
+        'apk': MetadataExtractor, 'jar': MetadataExtractor, 'apex': MetadataExtractor, 'vdex': MetadataExtractor
     }
 
     def enqueue(self, target):
@@ -66,7 +70,8 @@ class ROMExtractor(Extractor):
                 continue
 
             try:
-                print(guess)
+                if guess not in ('ko', 'so', 'dex', 'odex', 'apk', 'jar', 'apex', 'vdex', 'elf'):
+                    print(guess)
                 extractor = self.extractor_map[guess](process_item, self.target_path)
                 if is_base_file:
                     extractor.is_base_file = True
