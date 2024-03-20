@@ -24,7 +24,7 @@ class MetadataExtractor(Extractor):
             sha1sum = sha1sum.hexdigest()
             metadata = f"{str(self.target.absolute()).replace(str(Path(self.target_path).absolute()) + '/', '').replace('.extracted', '').split('/', 1)[1]};{sha1sum};{self.target.stat().st_size};"
             if "ELF" in file_type:
-                cmd = f"readelf -n {str(self.target)}"
+                cmd = f'readelf -n "{str(self.target)}"'
                 output = execute(cmd, suppress_output=True)
                 output_lines = output.split('\n')
                 for line in output_lines:
