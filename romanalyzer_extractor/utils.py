@@ -174,15 +174,19 @@ def rmdir(d):
     except Exception as e:
         log.exception(e)
 
-def execute(cmd, showlog=True, suppress_output=False):
+def execute(cmd, showlog=True, suppress_output=False, return_exit_code=False):
     output = ''
     try:
+        exit_code = 0
         stderr = None
         if suppress_output:
             stderr = subprocess.DEVNULL
         output = subprocess.check_output(cmd, shell=True, encoding='utf-8', stderr=stderr)
         if showlog: log.debug(u"Success execute: {}".format(cmd))
     except Exception as e:
+        exit_code = e.returncode
         if not suppress_output:
             log.exception(e)
+    if return_exit_code:
+        return output, exit_code
     return output

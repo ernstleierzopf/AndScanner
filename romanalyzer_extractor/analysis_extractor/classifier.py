@@ -37,9 +37,15 @@ def classify(target):
     if target.is_symlink():
         return "symlink"
 
+    if target.name == "vbmeta.img":
+        return "vbmeta"
+
     # new dat
     if target.name.endswith('.new.dat'):
         return 'newdat'
+
+    if target.name.split('.')[-1].isnumeric() and target.name.endswith('.new.dat.' + target.name.split('.')[-1]):
+        return 'data'
 
     # br
     if target.name.endswith('.new.dat.br'):

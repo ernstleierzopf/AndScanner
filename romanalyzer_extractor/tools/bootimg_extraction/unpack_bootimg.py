@@ -16,7 +16,7 @@
 
 """Unpacks the boot image.
 
-Extracts the kernel, ramdisk, second bootloader, dtb and recovery dtbo images.
+Extracts the kernel, ramdisk, second vbmeta, dtb and recovery dtbo images.
 """
 
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
@@ -92,9 +92,9 @@ class BootImageInfoFormatter:
             lines.append(f'ramdisk size: {self.ramdisk_size}')
             lines.append(
                 f'ramdisk load address: {self.ramdisk_load_address:#010x}')
-            lines.append(f'second bootloader size: {self.second_size}')
+            lines.append(f'second vbmeta size: {self.second_size}')
             lines.append(
-                f'second bootloader load address: '
+                f'second vbmeta load address: '
                 f'{self.second_load_address:#010x}')
             lines.append(
                 f'kernel tags load address: {self.tags_load_address:#010x}')
@@ -182,7 +182,7 @@ class BootImageInfoFormatter:
 
 
 def unpack_boot_image(boot_img, output_dir):
-    """extracts kernel, ramdisk, second bootloader and recovery dtbo"""
+    """extracts kernel, ramdisk, second vbmeta and recovery dtbo"""
     info = BootImageInfoFormatter()
     info.boot_magic = unpack('8s', boot_img.read(8))[0].decode()
 

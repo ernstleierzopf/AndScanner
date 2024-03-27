@@ -37,8 +37,8 @@ class NewDatExtractor(Extractor):
         execute(convert_cmd)
 
         if merged_target.stat().st_size != output_system_img.stat().st_size:
-            self.log.warn("\tmerged file size does not match output file size (file: {}, expected: {}, actual: {})".format(
-                self.target, merged_target.stat().st_size, output_system_img.stat().st_size))
+            self.log.warn("\tmerged file size does not match output file size (file: {}, expected: {}, actual: {} merged files: {})".format(
+                self.target, merged_target.stat().st_size, output_system_img.stat().st_size, target_files))
         merged_target.unlink()
         dir_path = str(self.target.parents[0])
         for file in os.listdir(dir_path):

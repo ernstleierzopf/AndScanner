@@ -102,6 +102,8 @@ def extract_image(image_path: str, extraction_path: str):
         return extracted_image_path
     if os.path.exists(os.path.join(extraction_path, "file_metadata.csv")):
         os.remove(os.path.join(extraction_path, "file_metadata.csv"))
+    if os.path.exists(os.path.join(extraction_path, "vbmeta_digests.csv")):
+        os.remove(os.path.join(extraction_path, "vbmeta_digests.csv"))
 
     # Extract the image zip, if required.
     extracted_image_path = extract_zip(image_path, extraction_path)
