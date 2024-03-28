@@ -119,7 +119,7 @@ class ROMExtractor(Extractor):
 
     def prepare_vbmeta(self):
         for part in self.partition_paths:
-            if self.vbmeta_img.parents[0] != part.parents[0]:
+            if self.vbmeta_img.parents[0] != part.parents[0] and not os.path.exists(str(self.vbmeta_img.parents[0] / part.name)):
                 link = self.vbmeta_img.parents[0] / part.name
                 link.symlink_to(part)
         if self.bootloader_img is not None:
