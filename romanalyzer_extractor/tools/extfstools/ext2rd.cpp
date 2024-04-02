@@ -1030,10 +1030,10 @@ struct exportinode : action {
         }
 #ifndef _WIN32
         if(i.issymlink()) {
-            if(symlink(i.symlink.c_str(), savepath.c_str()) != 0) {
-                std::string err_msg = "Failed to create symlink: " + savepath + " -> " + i.symlink;
-                perror(err_msg.c_str());
-            }
+            //if(symlink(i.symlink.c_str(), savepath.c_str()) != 0) {
+            //    std::string err_msg = "Failed to create symlink: " + savepath + " -> " + i.symlink;
+            //    perror(err_msg.c_str());
+            //}
             return;
         }
 #endif
