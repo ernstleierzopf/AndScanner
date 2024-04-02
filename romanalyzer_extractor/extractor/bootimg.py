@@ -28,7 +28,7 @@ class BootImgExtractor(Extractor):
 
         if not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))
-            return workdir
+            return None
         else:
             self.log.debug("\textracted path: {}".format(self.extracted))
             return self.extracted

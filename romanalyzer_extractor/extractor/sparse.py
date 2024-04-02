@@ -65,8 +65,8 @@ class SparseImgExtractor(Extractor):
                     sparse_img=self.target.absolute(), 
                     output=raw_img)
             execute(convert_cmd)
-            if raw_img.exists():
-                self.target.unlink()
+            # if raw_img.exists():
+            #     self.target.unlink()
 
             self.log.debug("\tconverted raw image: {}".format(raw_img))
         if self.target.name.lower() == "super.img":
