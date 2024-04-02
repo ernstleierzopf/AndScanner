@@ -1280,6 +1280,9 @@ class AvbHashtreeDescriptor(AvbDescriptor):
       image = image_containing_descriptor
     else:
       image_filename = os.path.join(image_dir, self.partition_name + image_ext)
+      if not os.path.exists(image_filename):
+          sys.stderr.write('File {} does not exist.\n'.format(image_filename))
+          return False
       image = ImageHandler(image_filename, read_only=True)
     # Generate the hashtree and checks that it matches what's in the file.
     digest_size = self._hashtree_digest_size()
@@ -2193,6 +2196,7 @@ class Avb(object):
     else:
       print('vbmeta: Successfully verified {} vbmeta struct in {}'
             .format(alg_name, image.filename))
+    unverified = []
     for desc in descriptors:
       if (isinstance(desc, AvbChainPartitionDescriptor)
           and follow_chain_partitions
@@ -2206,7 +2210,7 @@ class Avb(object):
                       hashlib.sha1(desc.public_key).hexdigest()))
       elif not desc.verify(image_dir, image_ext, expected_chain_partitions_map,
                            image, accept_zeroed_hashtree):
-        raise AvbError('Error verifying descriptor.')
+        unverified.append(desc.partition_name)
       # Honor --follow_chain_partitions - add '--' to make the output more
       # readable.
       if (isinstance(desc, AvbChainPartitionDescriptor)
@@ -2216,6 +2220,8 @@ class Avb(object):
                                               desc.partition_name + image_ext)
         self.verify_image(chained_image_filename, key_path, None, False,
                           accept_zeroed_hashtree)
+    if unverified:
+      raise AvbError('Error verifying descriptors {}.'.format(', '.join(unverified)))
   def print_partition_digests(self, image_filename, output, as_json):
     """Implements the 'print_partition_digests' command.
     Arguments:
@@ -3594,6 +3600,8 @@ def generate_hash_tree(image, image_size, block_size, hash_alg_name, salt,
       hasher.update(data)
       remaining -= len(data)
       if len(data) < block_size:
+        if len(data) == 0:
+            break
         hasher.update(b'\0' * (block_size - len(data)))
       level_output_list.append(hasher.digest())
       if digest_padding > 0:

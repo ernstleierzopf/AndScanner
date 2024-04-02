@@ -36,6 +36,16 @@ class SparseImgExtractor(Extractor):
                     os.unlink(os.path.join(dir_path, file))
             if self.target.name.lower().startswith("super."):
                 self.target = self.target.parents[0] / "super.img"
+        elif self.target.name.startswith("super_"):
+            raw_img = self.target.parents[0] / (self.target.name + '.raw')
+            convert_cmd = '{simg2img} "{sparse_img}" "{output}"'.format(
+                simg2img=self.tool,
+                sparse_img=self.target.absolute(),
+                output=raw_img)
+            execute(convert_cmd)
+            self.target.rename(self.target.parents[0] / (self.target.name.replace("super_", "")))
+            self.log.debug("\tconverted raw image: {}".format(raw_img))
+            self.target = self.target.parents[0] / "super.img"
         elif self.target.name.startswith("super.") and os.path.exists(str(self.target.parents[1] / "super_map.csv")):
             self.extracted = self.target.parents[0] / "super.img"
             with open(str(self.target.parents[1] / "super_map.csv")) as f:
@@ -67,7 +77,6 @@ class SparseImgExtractor(Extractor):
             execute(convert_cmd)
             # if raw_img.exists():
             #     self.target.unlink()
-
             self.log.debug("\tconverted raw image: {}".format(raw_img))
         if self.target.name.lower() == "super.img":
             self.extracted = []
