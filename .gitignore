@@ -31,3 +31,7 @@ __pycache__/
 /test.py
 /image_queue.json
 /app_analyzer/log/analysis.log
+
+# build files
+romanalyzer_extractor/tools/extfstools/build
+romanalyzer_extractor/tools/brotli/bin
