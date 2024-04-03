@@ -48,7 +48,8 @@ class ExtImgExtractor(Extractor):
 
         if self.extracted and self.extracted.exists(): 
             self.log.debug(f"\textracted path: {self.extracted}")
-            #extimg.unlink()
+            if extimg.name.endswith(".img.raw"):
+                extimg.unlink()
             return self.extracted
         else:
             self.log.warning(f"\tfailed to extract {self.target}")
