@@ -1,0 +1,1 @@
+{"basicTests": {"75883009B5952E85": {"filename": "/system/lib64/libstagefright.so", "symbol": "_ZN7android16NuMediaExtractor18initMediaExtractorERKNS_2spINS_10DataSourceEEE", "testType": "BINARY_CONTAINS_SYMBOL"}}}

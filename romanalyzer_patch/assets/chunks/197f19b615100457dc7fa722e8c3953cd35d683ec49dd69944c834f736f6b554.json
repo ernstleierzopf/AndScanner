@@ -1,0 +1,1 @@
+{"basicTests": {"573AF99D0E05769B": {"filename": "/system/framework/oat/arm/services.vdex", "testType": "FILE_EXISTS"}, "A0D43B5DCAEF1089": {"filename": "/system/framework/oat/x86/services.vdex", "testType": "FILE_EXISTS"}}}

@@ -111,9 +111,9 @@ def extract_image(image_path: str, extraction_path: str):
     return extracted_image_path
 
 
-def run_vulnerability_scan(image_path: str, extracted_image_path: str):
-    report_dir = Path(image_path).absolute().parent / "reports" / "patch_analyzer_reports"
-    report_file = report_dir / "patch_analysis_reports.txt"
+def run_vulnerability_scan(image_path: str, extracted_image_path: str, report_base_path: str):
+    report_dir = Path(report_base_path).absolute() / "reports" / "patch_analyzer_reports"
+    report_file = report_dir / (os.path.basename(image_path) + ".txt")
 
     if not report_dir.exists():
         os.makedirs(report_dir)
@@ -128,12 +128,12 @@ def run_vulnerability_scan(image_path: str, extracted_image_path: str):
 
     # Saving the reports.
     with open(report_file, "w") as f:
-        f.write(str(reports))
+        json.dump(reports, f, indent=2)
 
 
-def run_app_analyzer(image_path: str, extracted_image_path: str):
+def run_app_analyzer(image_path: str, extracted_image_path: str, report_base_path: str):
     # Build reports dir path.
-    report_dir = Path(image_path).absolute().parent / "reports" / "app_analyzer_apk_reports"
+    report_dir = Path(report_base_path).absolute() / "reports" / "app_analyzer_apk_reports"
 
     if not report_dir.exists():
         os.makedirs(report_dir)
@@ -144,7 +144,7 @@ def run_app_analyzer(image_path: str, extracted_image_path: str):
                 path_str = os.path.join(root, file_str)
 
                 # Build report target destination.
-                report_path = report_dir / path_str.replace('/', '_')
+                report_path = report_dir / os.path.basename(image_path) / file_str
 
                 # Build APK file analysis command.
                 command_str = f"python3 ./app_analyzer/analyze_apps.py -i {path_str} -r {report_path}"

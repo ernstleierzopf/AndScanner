@@ -63,7 +63,7 @@ def func(input,report):
         try:
             report.mkdir(parents=True)
         except Exception as e:
-            print (str(e))
+            print(str(e))
     logger.debug("The specified report output folder is: %s" % report.absolute())
 
     static_analyzer = StaticAnalyzer(report)

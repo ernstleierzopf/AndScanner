@@ -1,0 +1,1 @@
+{"basicTests": {"A2AAF3D3F1F81E05": {"filename": "/system/lib64/libnqnfc-nci.so", "substring": "157650336", "testType": "FILE_CONTAINS_SUBSTRING"}, "CCB52E59AD3D8E0D": {"filename": "/system/lib64/libnqnfc-nci.so", "testType": "FILE_EXISTS"}}}

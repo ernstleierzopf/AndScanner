@@ -1,0 +1,1 @@
+{"basicTests": {"305406FD3BFBEFF2": {"filename": "/system/lib/libbinder.so", "testType": "FILE_EXISTS"}, "56A58B2955DBA74E": {"filename": "/system/lib/libbinder.so", "substring": "203847542", "testType": "FILE_CONTAINS_SUBSTRING"}}}

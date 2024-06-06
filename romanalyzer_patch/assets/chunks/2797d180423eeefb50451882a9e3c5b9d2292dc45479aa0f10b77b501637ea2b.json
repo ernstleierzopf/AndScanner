@@ -1,0 +1,1 @@
+{"basicTests": {"0C48144A9396D368": {"filename": "/system/lib64/libLGParserOSAL.so", "symbol": "_ZN7android16LGMPEG4Extractor10parseChunkEPli", "testType": "BINARY_CONTAINS_SYMBOL"}, "D12EAFE2E91CA371": {"filename": "/system/lib64/libLGParserOSAL.so", "testType": "FILE_EXISTS"}}}

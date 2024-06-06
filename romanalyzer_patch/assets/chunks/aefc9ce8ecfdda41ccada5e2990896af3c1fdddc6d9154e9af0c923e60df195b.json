@@ -1,0 +1,1 @@
+{"basicTests": {"26843CA09BFA6881": {"filename": "/system/lib64/libstagefright.so", "testType": "FILE_EXISTS"}, "65CD2D7E54B29DBA": {"filename": "/system/lib64/libstagefright.so", "substring": "Didn't have enough space to copy kKeyValidSamples", "testType": "FILE_CONTAINS_SUBSTRING"}}}

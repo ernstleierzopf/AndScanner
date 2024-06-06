@@ -1,0 +1,1 @@
+{"basicTests": {"4C2186D9699DAE68": {"filename": "/system/framework/boot-framework.vdex", "testType": "FILE_EXISTS"}, "6E039B5A0E77F72C": {"filename": "/system/framework/arm/boot-framework.vdex", "testType": "FILE_EXISTS"}}}

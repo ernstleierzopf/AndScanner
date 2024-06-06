@@ -1,0 +1,1 @@
+{"basicTests": {"7A4B2FCCD85C36A7": {"filename": "/system/framework/oat/arm/wifi-service.vdex", "testType": "FILE_EXISTS"}, "AAEC3666153F9CB5": {"filename": "/system/framework/wifi-service.jar", "testType": "FILE_EXISTS"}, "B9B7192AC530DD29": {"filename": "/system/framework/oat/arm64/wifi-service.vdex", "testType": "FILE_EXISTS"}}}

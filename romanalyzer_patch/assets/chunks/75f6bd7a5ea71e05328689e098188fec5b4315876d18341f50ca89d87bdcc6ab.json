@@ -1,0 +1,1 @@
+{"basicTests": {"14550D28565517DA": {"filename": "/system/framework/x86/boot-telephony-common.vdex", "testType": "FILE_EXISTS"}, "A1B5048114DD96C6": {"filename": "/system/framework/arm64/boot-telephony-common.vdex", "testType": "FILE_EXISTS"}, "F94135E4B7E8E3EB": {"filename": "/system/framework/arm/boot-telephony-common.vdex", "testType": "FILE_EXISTS"}}}

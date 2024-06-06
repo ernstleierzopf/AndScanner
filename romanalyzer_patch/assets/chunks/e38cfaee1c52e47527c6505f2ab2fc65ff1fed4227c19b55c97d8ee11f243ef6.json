@@ -1,0 +1,1 @@
+{"basicTests": {"0D4FC72C0002E435": {"filename": "/system/lib64/libheif.so", "substring": "215002587", "testType": "FILE_CONTAINS_SUBSTRING"}, "4B0D7DB02906335A": {"filename": "/system/lib64/libheif.so", "substring": "init: videoFrame is a nullptr", "testType": "FILE_CONTAINS_SUBSTRING"}, "5480946DC9A48269": {"filename": "/system/lib64/libheif.so", "testType": "FILE_EXISTS"}}}

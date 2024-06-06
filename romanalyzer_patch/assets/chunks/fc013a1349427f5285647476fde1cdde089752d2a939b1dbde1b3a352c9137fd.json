@@ -1,0 +1,1 @@
+{"basicTests": {"1F59BC49168FD647": {"filename": "/system/vendor/lib64/nfc_nci_nxpsn.so", "substring": "238177877", "testType": "FILE_CONTAINS_SUBSTRING"}, "A839210BCE0C3ADD": {"filename": "/system/vendor/lib64/nfc_nci_nxpsn.so", "testType": "FILE_EXISTS"}}}
