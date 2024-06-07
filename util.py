@@ -147,7 +147,7 @@ def run_app_analyzer(image_path: str, extracted_image_path: str, report_base_pat
                 report_path = report_dir / os.path.basename(image_path) / file_str
 
                 # Build APK file analysis command.
-                command_str = f"python3 ./app_analyzer/analyze_apps.py -i {path_str} -r {report_path}"
+                command_str = f'python3 ./app_analyzer/analyze_apps.py -i "{path_str}" -r "{report_path}"'
 
                 # Execute APK file analysis command.
                 return_code = os.system(command_str)
