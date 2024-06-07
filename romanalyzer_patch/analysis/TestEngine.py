@@ -559,7 +559,7 @@ class TestEngine(object):
             size = int(entry["len"])
             addrHex = "{:02x}".format(addr)
             addrEndHex = "{:02x}".format(addr + size)
-            arguments = "-d --start-address=0x{} --stop-address=0x{} {}".format(
+            arguments = "-d --start-address=0x{} --stop-address=0x{} \"{}\"".format(
                 addrHex, addrEndHex, filepath.absolute()
             )
             lines = ProcessHelper.runObjdumpCommand(arguments)
