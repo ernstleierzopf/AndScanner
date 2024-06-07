@@ -23,19 +23,20 @@ def single_scan(image_path: str):
     #      f"API Level : {api_level}",
           sep="\n")
 
+    if len(sys.argv) == 4 and sys.argv[3] == "":
+        del sys.argv[3]
     if len(sys.argv) < 4 or (len(sys.argv) == 4 and sys.argv[3] == "--extract"):
         # Extracting image.
-        #print("Stage 2: Extracting image")
         print("Extracting image")
         extracted_image_path = extract_image(image_path, extraction_path)
 
     if len(sys.argv) < 4 or (len(sys.argv) == 4 and sys.argv[3] == "--scan"):
         # Run vulnerability scan.
-        print("Stage 3: Running vulnerability scans")
+        print("Running vulnerability scans")
         run_vulnerability_scan(image_path, extracted_image_path, extraction_path)
 
         # Run app analyzer.
-        print("Stage 4: Running app analyzer")
+        print("Running app analyzer")
         run_app_analyzer(image_path, extracted_image_path, extraction_path)
 
 

@@ -42,7 +42,7 @@ class TestEngine(object):
         self.loadTestSuites()
 
     def searchBuildProperty(self):
-        outputs = os.popen(f'find {self._localFirmwareRoot} -name "build.prop"').read()
+        outputs = os.popen(f'find "{self._localFirmwareRoot}" -name "build.prop"').read()
         outputs = outputs.splitlines()
         if not outputs:
             return None

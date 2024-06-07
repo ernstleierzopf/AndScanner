@@ -2,6 +2,12 @@ from datetime import datetime
 from loguru import logger
 
 AndroidVersionSDK = {
+    "16": "36",
+    "15": "35",
+    "14": "34",
+    "13": "33",
+    "12L": "32",
+    "12": "31",
     "11": "30",
     "10": "29",
     "9": "28",
