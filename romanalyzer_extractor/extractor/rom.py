@@ -11,6 +11,7 @@ from romanalyzer_extractor.extractor.binwalk import BinwalkExtractor
 from romanalyzer_extractor.extractor.bootimg import BootImgExtractor
 from romanalyzer_extractor.extractor.brotli import BrotliExtractor
 from romanalyzer_extractor.extractor.extimg import ExtImgExtractor
+from romanalyzer_extractor.extractor.ext4img import Ext4ImgExtractor
 from romanalyzer_extractor.extractor.newdat import NewDatExtractor
 from romanalyzer_extractor.extractor.ota import AndrOtaPayloadExtractor
 from romanalyzer_extractor.extractor.ozip import OZipExtractor
@@ -43,6 +44,7 @@ class ROMExtractor(Extractor):
             # 'binwalk': BinwalkExtractor,
             'sparseimg': SparseImgExtractor,
             'extimg': ExtImgExtractor,
+            'ext4img': Ext4ImgExtractor,
             'brotli': BrotliExtractor,
             'newdat': NewDatExtractor,
             'dir': DirExtractor,

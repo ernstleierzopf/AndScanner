@@ -1,4 +1,5 @@
 import magic
+import subprocess
 from pathlib import Path
 from romanalyzer_extractor.utils import log
 
@@ -100,6 +101,8 @@ def classify(target):
 
     # ext2/3/4 filesystem
     if any(ext in file_type for ext in EXT_EXT):
+        if subprocess.run(["blkid", "-o", "value", "-s", "TYPE", str(target)], capture_output=True).stdout.decode().strip() == "ext4":
+            return "ext4img"
         return "extimg"
 
     if file_type == "OpenPGP Public Key":
