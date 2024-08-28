@@ -11,7 +11,7 @@ class Ext4ImgExtractor(Extractor):
     def extract(self):
         if not self.chmod(): return None
         abspath = self.target.absolute()
-        mount_point = f"/tmp/{self.target.name}.mounted"
+        mount_point = f"{abspath}.mounted"
         mount_cmd = 'mount -t ext4 -o ro "{img}" "{mount_point}"'.format(
             img=self.target,
             mount_point=mount_point)
@@ -31,8 +31,6 @@ class Ext4ImgExtractor(Extractor):
                 self.log.debug(e)
             subprocess.check_call(umount_cmd, shell=True, encoding='utf-8')
             shutil.rmtree(mount_point)
-            # if abspath.exists():
-            #     abspath.unlink()
         except subprocess.CalledProcessError as e:
             self.log.error(f"Could not mount {self.target} to {mount_point}. Skipping {self.target}..")
             self.log.exception(e)
