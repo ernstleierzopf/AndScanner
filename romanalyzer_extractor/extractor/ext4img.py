@@ -35,8 +35,8 @@ class Ext4ImgExtractor(Extractor):
                 abspath.unlink()
         except subprocess.CalledProcessError as e:
             print("error", e)
-            log.error(f"Could not mount {self.target} to {mount_point}. Skipping {self.target}..")
-            log.exception(e)
+            self.log.error(f"Could not mount {self.target} to {mount_point}. Skipping {self.target}..")
+            self.log.exception(e)
 
         if self.extracted is None or not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))
