@@ -11,7 +11,7 @@ class Ext4ImgExtractor(Extractor):
     def extract(self):
         if not self.chmod(): return None
         abspath = self.target.absolute()
-        mount_point = f"{abspath}.mounted"
+        mount_point = f"/tmp/{self.target.name}.mounted"
         mount_cmd = 'mount -t ext4 -o ro,loop "{img}" "{mount_point}"'.format(
             img=self.target,
             mount_point=mount_point)

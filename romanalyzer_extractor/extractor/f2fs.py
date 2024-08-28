@@ -11,7 +11,7 @@ class F2fsImgExtractor(Extractor):
     def extract(self):
         if not self.chmod(): return None
         abspath = self.target.absolute()
-        mount_point = f"{abspath}.mounted"
+        mount_point = f"/tmp/{self.target.name}.mounted"
         mount_cmd = 'mount -t f2fs "{f2fs_img}" "{mount_point}"'.format(
             f2fs_img=self.target,
             mount_point=mount_point)
