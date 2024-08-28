@@ -31,10 +31,9 @@ class Ext4ImgExtractor(Extractor):
                 self.log.debug(e)
             subprocess.check_call(umount_cmd, shell=True, encoding='utf-8')
             shutil.rmtree(mount_point)
-            if abspath.exists():
-                abspath.unlink()
+            # if abspath.exists():
+            #     abspath.unlink()
         except subprocess.CalledProcessError as e:
-            print("error", e)
             self.log.error(f"Could not mount {self.target} to {mount_point}. Skipping {self.target}..")
             self.log.exception(e)
 

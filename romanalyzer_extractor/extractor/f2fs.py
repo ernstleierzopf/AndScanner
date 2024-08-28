@@ -34,7 +34,6 @@ class F2fsImgExtractor(Extractor):
             if abspath.exists():
                 abspath.unlink()
         except subprocess.CalledProcessError as e:
-            print("error", e)
             self.log.error(f"Could not mount {self.target} to {mount_point}. Skipping {self.target}..")
             self.log.exception(e)
 
