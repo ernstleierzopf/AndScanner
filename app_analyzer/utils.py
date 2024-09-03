@@ -1,12 +1,10 @@
 #! /usr/bin/env python
 #encoding: utf-8
 
-import re
 import sys
 import csv
 import logging
 import linecache
-import time
 
 logger = logging.getLogger('main')
 

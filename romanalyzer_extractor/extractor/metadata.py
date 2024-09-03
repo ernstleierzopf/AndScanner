@@ -1,7 +1,6 @@
 import os
 import hashlib
 import magic
-import subprocess
 from pathlib import Path
 from romanalyzer_extractor.utils import execute
 from romanalyzer_extractor.extractor.base import Extractor

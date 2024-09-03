@@ -1,6 +1,5 @@
 import os
 import shutil
-import logging
 import logging.config
 import subprocess
 from pathlib import Path

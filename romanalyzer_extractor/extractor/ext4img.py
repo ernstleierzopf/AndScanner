@@ -1,10 +1,7 @@
 import subprocess
 import shutil
 import os
-from pathlib import Path
-from romanalyzer_extractor.utils import execute
 from romanalyzer_extractor.extractor.base import Extractor
-from romanalyzer_extractor.extractor.archive import ArchiveExtractor
 
 
 class Ext4ImgExtractor(Extractor):

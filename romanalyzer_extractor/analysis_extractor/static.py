@@ -6,7 +6,6 @@ from manager.aws import AWSManager
 from manager.mongo import MongoManager
 from manager.neo4j import NeoGraphManager
 from analysis_extractor.rom import AndroRomFile
-from analysis_extractor.esrom import SaveRomFileToES
 
 aws_manager = AWSManager()
 

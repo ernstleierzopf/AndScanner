@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from romanalyzer_extractor.utils import execute
 from romanalyzer_extractor.extractor.base import Extractor
+from romanalyzer_extractor.utils import execute
 
 
 class AndrOtaPayloadExtractor(Extractor):

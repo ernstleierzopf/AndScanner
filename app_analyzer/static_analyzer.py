@@ -2,7 +2,6 @@
 #encoding: utf-8
 import hashlib
 import logging
-import os
 import sys
 import os
 from pathlib import Path
