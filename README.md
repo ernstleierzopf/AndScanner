@@ -6,7 +6,6 @@ The initial project was created as a tool for the paper “Large-scale Security 
 Changes in this Fork:
 - Repaired dependencies
 - Automatically checks API level and uses appropriate image extractor
-- Added Batch Scan functionality
 
 ___
 
@@ -51,40 +50,24 @@ To deactivate the virtual environment after the scans:
 $ deactivate
 ```
 
-### Single Scan
+### Image Extraction and Analysis
 
-To scan a single image:
+To scan and analyze an image:
 ```shell
-$ python3 scan.py "path/to/image.zip" "vendor-name" "android-api-level"
+$ python3 scan.py "path/to/image.zip" "android-api-level"
 ```
-`scan.py` takes 3 arguments:
+`scan.py` takes 2 arguments:
 1. Path to the image file
-2. Name of the image vendor
-3. Android API level of the image
+2. Android API level of the image
 
-### Batch Scan
-
-Instead of scanning individual images, you can consolidate the paths, vendor names, and Android API levels of multiple images into a JSON file.
-
-JSON file format:
-```json
-[
-  {
-    "path": "path/to/image/foo.zip",
-    "vendor": "vendor foo",
-    "api_level": 30
-  },
-  {
-    "path": "path/to/image/bar.zip",
-    "vendor": "vendor bar",
-    "api_level": 28
-  }
-]
+To only extract the image run:
+```shell
+$ python3 scan.py "path/to/image.zip" "android-api-level" --extract
 ```
 
-To run a batch scan:
+To only run analysis on the extracted image run:
 ```shell
-$ python3 scan.py path/to/the/file.json
+$ python3 scan.py "path/to/image.zip" "android-api-level" --scan
 ```
 
 ___
@@ -97,14 +80,4 @@ ___
 
 ## Limitations
 
-- Only supports images up to Android API level 30
-
-## Images and build.prop Files
-
-Images can be found at the following sources.
-Android Dumps provides a wide variety of images and accompanying `build.prop` files.
-
-| Vendor        | Download Source                              |
-|---------------|----------------------------------------------|
-| Google        | https://developers.google.com/android/images |
-| Android Dumps | https://dumps.tadiphone.dev/dumps            |
+~~- Only supports images up to Android API level 30~~ supports images up to API level 34
