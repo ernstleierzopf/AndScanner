@@ -106,7 +106,7 @@ class ROMExtractor(Extractor):
         else:
             keys = ["image"]
             digests = [self.target.name]
-            with open(os.path.join(self.target_path, "vbmeta_digests.csv"), "w") as f:
+            with open(os.path.join(self.target_path, "vbmeta-digests.csv"), "w") as f:
                 f.write(";".join(keys) + "\n")
                 f.write(";".join(digests) + "\n")
 
@@ -154,10 +154,10 @@ class ROMExtractor(Extractor):
             key, digest = line.split(":")
             keys.append(key)
             digests.append(digest.replace("\n", "").strip())
-        with open(os.path.join(self.target_path, "vbmeta_digests.csv"), "w") as f:
+        with open(os.path.join(self.target_path, "vbmeta-digests.csv"), "w") as f:
             f.write(";".join(keys) + "\n")
             f.write(";".join(digests) + "\n")
-        self.log.debug("\tstored digests in {}".format(os.path.join(self.target_path, "vbmeta_digests.csv")))
+        self.log.debug("\tstored digests in {}".format(os.path.join(self.target_path, "vbmeta-digests.csv")))
 
     def verify_vbmeta(self):
         verify_vbmeta_cmd = f"python3 {self.avbtool} verify_image --image \"{self.vbmeta_img}\" --follow_chain_partitions"
