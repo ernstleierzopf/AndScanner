@@ -8,7 +8,7 @@ from romanalyzer_extractor.extractor.base import Extractor
 
 class MetadataExtractor(Extractor):
     def extract(self):
-        file_metadata_path = os.path.join(self.target_path, "file_metadata.csv")
+        file_metadata_path = os.path.join(self.target_path, "file-metadata.csv")
         if not os.path.exists(file_metadata_path):
             with open(file_metadata_path, "w") as f:
                 f.write("Path;Hash;Size;ELF Build ID\n")

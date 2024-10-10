@@ -98,10 +98,10 @@ def extract_image(image_path: str, extraction_path: str):
     if os.path.exists(extracted_image_path):
         print("Extracted image path already exists at %s. Skipping.." % extracted_image_path)
         return extracted_image_path
-    if os.path.exists(os.path.join(extraction_path, "file_metadata.csv")):
-        os.remove(os.path.join(extraction_path, "file_metadata.csv"))
-    if os.path.exists(os.path.join(extraction_path, "vbmeta_digests.csv")):
-        os.remove(os.path.join(extraction_path, "vbmeta_digests.csv"))
+    if os.path.exists(os.path.join(extraction_path, "file-metadata.csv")):
+        os.remove(os.path.join(extraction_path, "file-metadata.csv"))
+    if os.path.exists(os.path.join(extraction_path, "vbmeta-digests.csv")):
+        os.remove(os.path.join(extraction_path, "vbmeta-digests.csv"))
 
     # Extract the image zip, if required.
     extracted_image_path = extract_zip(image_path, extraction_path)
