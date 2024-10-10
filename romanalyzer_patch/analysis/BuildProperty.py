@@ -106,8 +106,7 @@ class BuildProperty(object):
     def getAndroidAPIVersion(self):
         sdk = self.buildProperties.get("ro.build.version.sdk")
         if not sdk:
-            version = self.getAndroidAPIVersion()
-            sdk = AndroidVersionSDK.get(version)
+            sdk = self.buildProperties.get("ro.odm.build.version.sdk")
 
         return sdk
 
