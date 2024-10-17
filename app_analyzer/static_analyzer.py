@@ -7,12 +7,11 @@ import os
 from pathlib import Path
 
 from androguard.core.bytecodes import dvm, apk
-from androguard.core.bytecodes.axml import ResParserError
 from utils import export_to_txt
 import zipfile
 
 abs_path = os.path.abspath(os.path.dirname(__file__))
-resource_path = os.path.join(abs_path,"resource")
+resource_path = os.path.join(abs_path, "resource")
 print(resource_path)
 logger = logging.getLogger('main')
 
@@ -88,11 +87,31 @@ class StaticAnalyzer(object):
                 msg = "Bad magic number for file header - path: %s" % apk_path
                 raise zipfile.BadZipFile(msg)
 
-        self.max_sdk_version = self.target.get_max_sdk_version()
-        self.min_sdk_version = self.target.get_min_sdk_version()
-        self.target_sdk_version = self.target.get_target_sdk_version()
-        self.effective_target_sdk_version = self.target.get_effective_target_sdk_version()
+        self.max_sdk_version = None
+        self.min_sdk_version = None
+        self.target_sdk_version = None
+        self.effective_target_sdk_version = None
 
+        try:
+            self.max_sdk_version = self.target.get_max_sdk_version()
+        except Exception as e:
+            print("max sdk version error")
+            print(e)
+        try:
+            self.min_sdk_version = self.target.get_min_sdk_version()
+        except Exception as e:
+            print("min sdk version error")
+            print(e)
+        try:
+            self.target_sdk_version = self.target.get_target_sdk_version()
+        except Exception as e:
+            print("target sdk version error")
+            print(e)
+        try:
+            self.effective_target_sdk_version = self.target.get_effective_target_sdk_version()
+        except Exception as e:
+            print("effective target sdk version error")
+            print(e)
         self.apk_report = self.report_folder
 
 #        os.system('apktool d ' + self.target_path.as_posix() + ' -o ' + self.apk_report.as_posix() + '/apktool_tmp')
@@ -341,7 +360,7 @@ class StaticAnalyzer(object):
         try:
             tmp_icon_str = self.target.get_app_icon()
             txt_write_line.append("app icon: {}".format(tmp_icon_str))
-        except ResParserError as e:
+        except Exception as e:
             print("app icon error")
             print(e)
 

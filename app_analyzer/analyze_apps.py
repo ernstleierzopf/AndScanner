@@ -12,7 +12,7 @@ from androguard.core import androconf
 __version__ = '0.1'
 
 # Initialize logger
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
     format='%(asctime)s %(filename)s [line:%(lineno)d]  \t%(levelname)s %(message)s',
     datefmt='%a, %d %b %Y %H:%M:%S',
     filename=str(Path(__file__).absolute().parent / "log" / "analysis.log"),
@@ -51,7 +51,6 @@ def main(options, args):
             static_analyzer.start()
         except Exception as e:
             logger.exception(str(e))
-            #print_exception()
 
 def func(input,report):
     
