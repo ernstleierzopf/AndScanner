@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 from androguard.core.bytecodes import dvm, apk
+from androguard.core.bytecodes.axml import ResParserError
 from utils import export_to_txt
 import zipfile
 
@@ -304,41 +305,45 @@ class StaticAnalyzer(object):
         err_write_line = []
         try:
             txt_write_line.append("package name: {}".format(self.target.get_package()))
-            if self.target.get_package() == None:
+            if self.target.get_package() is None:
                 err_write_line.append('this app has no package name')
         except Exception as e:
-            print ('package name error')
-            print (e)
+            print('package name error')
+            print(e)
         try:
             txt_write_line.append("internal version: {}".format(self.target.get_androidversion_code()))
         except Exception as e:
-            print ('internal version error')
-            print (e)
+            print('internal version error')
+            print(e)
 
         try:
             txt_write_line.append("displayed version: {}".format(self.target.get_androidversion_name()))
         except Exception as e:
-            print ('displayed version error')
-            print (e)
+            print('displayed version error')
+            print(e)
 
         try:
             txt_write_line.append("apk file: {}".format(self.target.get_filename().split('/')[-1]))
         except Exception as e:
-            print ('apk file error')
-            print (e)
+            print('apk file error')
+            print(e)
 
         try:
             txt_write_line.append("app name: {}".format(self.target.get_app_name()))
-            if self.target.get_app_name() == None:
+            if self.target.get_app_name() is None:
                 err_write_line.append('this app has no app name')
 
         except Exception as e:
-            print ('app name error')
-            print (e)
+            print('app name error')
+            print(e)
 
-#        txt_write_line.append("app icon: {}".format(self.target.get_app_icon()))       
-        tmp_icon_str = self.target.get_app_icon()
-        txt_write_line.append("app icon: {}".format(tmp_icon_str))
+#        txt_write_line.append("app icon: {}".format(self.target.get_app_icon()))
+        try:
+            tmp_icon_str = self.target.get_app_icon()
+            txt_write_line.append("app icon: {}".format(tmp_icon_str))
+        except ResParserError as e:
+            print("app icon error")
+            print(e)
 
         export_to_txt(txt_write_line, 'basic_info.txt', self.apk_report)
         export_to_txt(err_write_line, 'abnormal_info.txt', self.apk_report)
