@@ -64,6 +64,7 @@ class StaticAnalyzer(object):
             raise zipfile.BadZipFile(msg)
         except TypeError as e:
             logger.error("androguard: " + repr(e))
+            return None
         
         if not a.is_valid_APK():
             # It means the APK has a valid signature 
@@ -128,7 +129,6 @@ class StaticAnalyzer(object):
             self.export_app_configs()
         else:
             self.export_report()
-        logger.info("")
 
     def export_sign(self):
         from androguard.util import get_certificate_name_string
