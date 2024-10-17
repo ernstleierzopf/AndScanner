@@ -12,7 +12,6 @@ import zipfile
 
 abs_path = os.path.abspath(os.path.dirname(__file__))
 resource_path = os.path.join(abs_path, "resource")
-print(resource_path)
 logger = logging.getLogger('main')
 
 TYPE_DESCRIPTOR = {
@@ -63,6 +62,8 @@ class StaticAnalyzer(object):
         except zipfile.BadZipFile:
             msg = "Bad magic number for file header - path: %s" % apk_path
             raise zipfile.BadZipFile(msg)
+        except TypeError as e:
+            logger.error("androguard: " + repr(e))
         
         if not a.is_valid_APK():
             # It means the APK has a valid signature 
@@ -95,23 +96,19 @@ class StaticAnalyzer(object):
         try:
             self.max_sdk_version = self.target.get_max_sdk_version()
         except Exception as e:
-            print("max sdk version error")
-            print(e)
+            print("max sdk version error: " + repr(e))
         try:
             self.min_sdk_version = self.target.get_min_sdk_version()
         except Exception as e:
-            print("min sdk version error")
-            print(e)
+            print("min sdk version error: " + repr(e))
         try:
             self.target_sdk_version = self.target.get_target_sdk_version()
         except Exception as e:
-            print("target sdk version error")
-            print(e)
+            print("target sdk version error: " + repr(e))
         try:
             self.effective_target_sdk_version = self.target.get_effective_target_sdk_version()
         except Exception as e:
-            print("effective target sdk version error")
-            print(e)
+            print("effective target sdk version error: " + repr(e))
         self.apk_report = self.report_folder
 
 #        os.system('apktool d ' + self.target_path.as_posix() + ' -o ' + self.apk_report.as_posix() + '/apktool_tmp')
@@ -131,6 +128,7 @@ class StaticAnalyzer(object):
             self.export_app_configs()
         else:
             self.export_report()
+        logger.info("")
 
     def export_sign(self):
         from androguard.util import get_certificate_name_string
@@ -327,25 +325,21 @@ class StaticAnalyzer(object):
             if self.target.get_package() is None:
                 err_write_line.append('this app has no package name')
         except Exception as e:
-            print('package name error')
-            print(e)
+            print('package name error: ' + repr(e))
         try:
             txt_write_line.append("internal version: {}".format(self.target.get_androidversion_code()))
         except Exception as e:
-            print('internal version error')
-            print(e)
+            print('internal version error: ' + repr(e))
 
         try:
             txt_write_line.append("displayed version: {}".format(self.target.get_androidversion_name()))
         except Exception as e:
-            print('displayed version error')
-            print(e)
+            print('displayed version error: ' + repr(e))
 
         try:
             txt_write_line.append("apk file: {}".format(self.target.get_filename().split('/')[-1]))
         except Exception as e:
-            print('apk file error')
-            print(e)
+            print('apk file error: ' + repr(e))
 
         try:
             txt_write_line.append("app name: {}".format(self.target.get_app_name()))
@@ -353,16 +347,14 @@ class StaticAnalyzer(object):
                 err_write_line.append('this app has no app name')
 
         except Exception as e:
-            print('app name error')
-            print(e)
+            print('app name error: ' + repr(e))
 
 #        txt_write_line.append("app icon: {}".format(self.target.get_app_icon()))
         try:
             tmp_icon_str = self.target.get_app_icon()
             txt_write_line.append("app icon: {}".format(tmp_icon_str))
         except Exception as e:
-            print("app icon error")
-            print(e)
+            print("app icon error " + repr(e))
 
         export_to_txt(txt_write_line, 'basic_info.txt', self.apk_report)
         export_to_txt(err_write_line, 'abnormal_info.txt', self.apk_report)
