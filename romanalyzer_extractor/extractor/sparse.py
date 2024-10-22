@@ -1,11 +1,14 @@
 import os
 from pathlib import Path
+
+from romanalyzer_extractor.extractor.ext4img import Ext4ImgExtractor
 from romanalyzer_extractor.utils import execute
 from romanalyzer_extractor.extractor.base import Extractor
 from romanalyzer_extractor.extractor.archive import ArchiveExtractor
 from romanalyzer_extractor.extractor.f2fs import F2fsImgExtractor
 from romanalyzer_extractor.extractor.erofsimg import ErofsImgExtractor
 from romanalyzer_extractor.extractor.extimg import ExtImgExtractor
+from romanalyzer_extractor.extractor.ext4img import Ext4ImgExtractor
 from romanalyzer_extractor.analysis_extractor.classifier import classify
 
 
@@ -118,6 +121,8 @@ class SparseImgExtractor(Extractor):
             extractor = ErofsImgExtractor(raw_img)
         elif file_class == "extimg":
             extractor = ExtImgExtractor(raw_img)
+        elif file_class == "ext4img":
+            extractor = Ext4ImgExtractor(raw_img)
         if extractor is not None:
             self.extracted = extractor.extract()
 
