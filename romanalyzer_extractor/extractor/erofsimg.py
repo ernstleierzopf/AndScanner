@@ -24,5 +24,4 @@ class ErofsImgExtractor(Extractor):
             return None
         else:
             self.log.debug("\textracted path: {}".format(self.extracted))
-            abspath.unlink()
             return self.extracted
