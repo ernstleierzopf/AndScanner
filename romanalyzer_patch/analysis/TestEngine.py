@@ -363,7 +363,7 @@ class TestEngine(object):
         if filepath.exists():
             return True
         else:
-            logger.warning("Not exists: {}".format(filepath))
+            logger.debug("Not exists: {}".format(filepath))
             return False
 
     def runFileContainsSubstringTest(self, test):

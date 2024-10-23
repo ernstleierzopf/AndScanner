@@ -345,7 +345,6 @@ class StaticAnalyzer(object):
             txt_write_line.append("app name: {}".format(self.target.get_app_name()))
             if self.target.get_app_name() is None:
                 err_write_line.append('this app has no app name')
-
         except Exception as e:
             print('app name error: ' + repr(e))
 
