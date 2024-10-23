@@ -25,11 +25,11 @@ def execProcessAndGetExitValue(cmd):
 
 
 def getObjDumptTOutput(filepath):
-    return execProcessAndGetStdout("{} -tT {}".format(OBJDUMP_PATH, filepath))
+    return execProcessAndGetStdout("{} -tT \"{}\"".format(OBJDUMP_PATH, filepath))
 
 
 def getObjDumpHW(filepath):
-    return execProcessAndGetStdout("{} -h -w {}".format(OBJDUMP_PATH, filepath))
+    return execProcessAndGetStdout("{} -h -w \"{}\"".format(OBJDUMP_PATH, filepath))
 
 
 def getObjDumpHWwithCheck(filepath):
@@ -37,7 +37,7 @@ def getObjDumpHWwithCheck(filepath):
 
 
 def getFileArchitecture(filepath):
-    lines = execProcessAndGetStdout("file {}".format(filepath))
+    lines = execProcessAndGetStdout("file \"{}\"".format(filepath))
     if lines:
         return lines[0]
     else:
@@ -68,7 +68,7 @@ def getSymbolTableEntry(fileOrLines, symbol):
     if isinstance(fileOrLines, list):
         objdumpLines = fileOrLines
     elif isinstance(fileOrLines, str):
-        objdumpLines = runObjdumpCommand("-tT {}".format(fileOrLines))
+        objdumpLines = runObjdumpCommand("-tT \"{}\"".format(fileOrLines))
 
     if not objdumpLines:
         logger.exception(
