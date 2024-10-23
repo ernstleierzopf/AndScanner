@@ -8,7 +8,6 @@ from pathlib import Path
 
 from androguard.core.bytecodes import dvm, apk
 from utils import export_to_txt
-import zipfile
 
 abs_path = os.path.abspath(os.path.dirname(__file__))
 resource_path = os.path.join(abs_path, "resource")

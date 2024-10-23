@@ -6,7 +6,7 @@ from pathlib import Path
 
 import lzma
 import json
-from loguru import logger
+import logging
 import multiprocessing
 
 from romanalyzer_patch.analysis.BuildProperty import BuildProperty
@@ -15,14 +15,17 @@ from romanalyzer_patch.analysis.signatures.RollingSignature import RollingSignat
 from romanalyzer_patch.analysis.signatures.MultiSignatureScanner import MultiSignatureScanner
 from romanalyzer_patch.analysis import ProcessHelper
 
+logging.basicConfig(format='{levelname:^5s} - {message:s}', style='{', level=logging.INFO)
+logging.getLogger().setLevel(logging.INFO)
+
 
 def validateFilename(filename):
     if not filename.startswith("/system"):
-        logger.exception("Filename {}  doesn't start with '/system/".format(filename))
+        logging.exception("Filename {}  doesn't start with '/system/".format(filename))
         return False
 
     if "/../" in filename:
-        logger.exception("Filename {} contains directory traversal".format(filename))
+        logging.exception("Filename {} contains directory traversal".format(filename))
         return False
 
     return True
@@ -48,11 +51,11 @@ class TestEngine(object):
             return None
         for line in outputs:
             if "/system/build.prop" in line:
-                logger.debug("Find build.prop location: {}".format(line))
+                logging.debug("Find build.prop location: {}".format(line))
                 return line
 
         result = outputs.pop()
-        logger.debug("Maybe build.prop location: {}".format(result))
+        logging.debug("Maybe build.prop location: {}".format(result))
         return result
 
     def localize(self, filePath):
@@ -76,13 +79,9 @@ class TestEngine(object):
     def loadTestSuites(self):
         allTestSuites = json.load(open("romanalyzer_patch/assets/allTestSuites.json"))
         apiVersion = self._buildProperties.getAndroidAPIVersion()
-        
-        
-        logger.debug("API Version: {}".format(apiVersion))
+        logging.debug("API Version: {}".format(apiVersion))
         if apiVersion not in allTestSuites:
-            logger.exception(
-                "Current API version is not support: {}".format(apiVersion)
-            )
+            logging.exception("Current API version is not support: {}".format(apiVersion))
             return
         testSuite = allTestSuites[apiVersion]
         basicTestChunks = [
@@ -143,7 +142,7 @@ class TestEngine(object):
         isVulnerable = self.runVulnLogicTest(vulnObject["testVulnerable"])
         isFixed = self.runVulnLogicTest(vulnObject["testFixed"])
 
-        if isFixed == None or isVulnerable == None or (isFixed and isVulnerable):
+        if isFixed is None or isVulnerable is None or (isFixed and isVulnerable):
             return {cve: "_"}
         elif isFixed and not isVulnerable:
             return {cve: "T"}
@@ -161,7 +160,7 @@ class TestEngine(object):
     def runAllVulnLogicTest(self):
         reports = dict()
         totalTasks = len(self._vulnerabilities_database)
-        logger.debug("Total number of testcase: {}".format(totalTasks))
+        logging.debug("Total number of testcase: {}".format(totalTasks))
 
         # pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
         pool = multiprocessing.Pool(processes=8)
@@ -189,21 +188,14 @@ class TestEngine(object):
     def runVulnLogicTest(self, testObject):
         if isinstance(testObject, str):
             result = self.executeBasicTestByUUID(testObject)
-            # logger.debug(f"UUID: {testObject} Result: {result}")
             return result
 
         test = testObject
         if "testType" not in test:
-            logger.exception("basictest is missing testType field!")
+            logging.exception("basictest is missing testType field!")
             return None
 
         testType = test["testType"]
-        # if testType in ("TRUE", "FALSE"):
-        #     logger.debug(f"TestType: {testType}")
-        # else:
-        #     logger.debug(
-        #         "TestType: {} Subtests: {}".format(testType, len(test["subtests"]))
-        #     )
 
         if testType == "TRUE":
             return True
@@ -214,7 +206,7 @@ class TestEngine(object):
             nullFound = False
             for subtest in subtests:
                 subtestResult = self.runVulnLogicTest(subtest)
-                if subtestResult == None:
+                if subtestResult is None:
                     nullFound = True
                 elif not subtestResult:
                     return False
@@ -226,7 +218,7 @@ class TestEngine(object):
             nullFound = False
             for subtest in subtests:
                 subtestResult = self.runVulnLogicTest(subtest)
-                if subtestResult == None:
+                if subtestResult is None:
                     nullFound = True
                 elif not subtestResult:
                     return True
@@ -238,7 +230,7 @@ class TestEngine(object):
             nullFound = False
             for subtest in subtests:
                 subtestResult = self.runVulnLogicTest(subtest)
-                if subtestResult == None:
+                if subtestResult is None:
                     nullFound = True
                 elif subtestResult == True:
                     return True
@@ -250,7 +242,7 @@ class TestEngine(object):
             nullFound = False
             for subtest in subtests:
                 subtestResult = self.runVulnLogicTest(subtest)
-                if subtestResult == None:
+                if subtestResult is None:
                     nullFound = True
                 elif subtestResult == True:
                     return False
@@ -260,11 +252,11 @@ class TestEngine(object):
         elif testType == "NOT":
             subtests = test["subtests"]
             subtestResult = self.runVulnLogicTest(subtests)
-            if subtestResult == None:
+            if subtestResult is None:
                 return None
             return not subtestResult
         else:
-            logger.exception("Unknown testType: {}".format(testType))
+            logging.exception("Unknown testType: {}".format(testType))
             return None
 
     def threadExecuteBasicTestByUUID(self, uuid, queue):
@@ -274,7 +266,7 @@ class TestEngine(object):
     def executeBasicTestByUUID(self, uuid):
         if uuid.startswith("!"):
             subtestResult = self.executeBasicTestByUUID(uuid[1:])
-            if subtestResult == None:
+            if subtestResult is None:
                 return None
             else:
                 return not subtestResult
@@ -283,13 +275,13 @@ class TestEngine(object):
             self._basicTestResultCache[uuid] = basicTestResult
             return basicTestResult
         else:
-            # logger.debug("executeBasicTestByUUID hit cache!")
+            # logging.debug("executeBasicTestByUUID hit cache!")
             return self._basicTestResultCache[uuid]
 
     def executeBasicTest(self, test):
         testType = test.get("testType")
         if not testType:
-            logger.exception("basic test has no testtype information: {}".format(test))
+            logging.exception("basic test has no testtype information: {}".format(test))
             return None
 
         if testType == "CHIPSET_VENDOR":
@@ -323,7 +315,7 @@ class TestEngine(object):
         # elif testType == "COMBINED_SIGNATURE":
         #     return self.runCombinedSignatureTest(test)
         else:
-            # logger.exception(f"Unknown testType: {testType}")
+            # logging.exception(f"Unknown testType: {testType}")
             return None
 
     def is64BitSystem(self):
@@ -363,7 +355,7 @@ class TestEngine(object):
         if filepath.exists():
             return True
         else:
-            logger.debug("Not exists: {}".format(filepath))
+            logging.debug("Not exists: {}".format(filepath))
             return False
 
     def runFileContainsSubstringTest(self, test):
@@ -374,7 +366,7 @@ class TestEngine(object):
         needle = b""
         if "substring" in test:
             if "substringB64" in test:
-                logger.exception(
+                logging.exception(
                     "Test FILE_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both"
                 )
                 return None
@@ -402,7 +394,7 @@ class TestEngine(object):
         needle = b""
         if "substring" in test:
             if "substringB64" in test:
-                logger.exception(
+                logging.exception(
                     "Test XZ_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both"
                 )
                 return None
@@ -426,7 +418,7 @@ class TestEngine(object):
 
         if "substring" in test:
             if "substringB64" in test:
-                logger.exception(
+                logging.exception(
                     "Test FILE_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both"
                 )
                 return None
@@ -447,8 +439,6 @@ class TestEngine(object):
             with zf.open(zipitem) as f:
                 data = f.read()
                 return True if needle in data else False
-
-        return None
 
     def runZipEntryExistsTest(self, test):
         filename = test["zipFile"]
@@ -521,14 +511,13 @@ class TestEngine(object):
 
         try:
             if objdumpLines:
-                return ProcessHelper.getSymbolTableEntry(objdumpLines, symbol) != None
+                return ProcessHelper.getSymbolTableEntry(objdumpLines, symbol) is not None
             else:
                 return (
-                    ProcessHelper.getSymbolTableEntry(str(filePath.absolute()), symbol)
-                    != None
+                    ProcessHelper.getSymbolTableEntry(str(filePath.absolute()), symbol) is not None
                 )
         except Exception as e:
-            logger.exception(e)
+            logging.exception(e)
             return None
 
     def runDisasFunctionContainsStringTest(self, test, objdumpLines=None):
@@ -565,7 +554,7 @@ class TestEngine(object):
             lines = ProcessHelper.runObjdumpCommand(arguments)
             return any([substring in str(line) for line in lines])
         except Exception as e:
-            logger.exception(e)
+            logging.exception(e)
             return None
 
     def runDisasFunctionMatchesRegexTest(self, test, objdumpLines=None):
@@ -589,7 +578,7 @@ class TestEngine(object):
                     str(filepath.absolute()), symbol
                 )
 
-            if entry == None:
+            if entry is None:
                 return None
 
             addr = int(entry["addr"])
@@ -606,7 +595,7 @@ class TestEngine(object):
             m = p.match(builder)
             return m.matches()
         except Exception as e:
-            logger.exception(e)
+            logging.exception(e)
             return None
 
     def runMaskSignatureTest(self, test, symbolTable=None):
@@ -627,7 +616,7 @@ class TestEngine(object):
             symbolTable = signatureChecker.readSymbolTable(filepath.absolute())
 
         if not symbolTable:
-            logger.exception(
+            logging.exception(
                 "Error: creating symbol table failed for file: {}".format(filepath)
             )
             return None
@@ -650,18 +639,18 @@ class TestEngine(object):
     def getRollingSignatureForTest(self, test):
         try:
             testType = test["testType"]
-            if test != None and (
+            if test is not None and (
                 testType == "ROLLING_SIGNATURE" or testType == "COMBINED_SIGNATURE"
             ):
                 rollingSignature = test["rollingSignature"]
                 signatureType = rollingSignature.split(":")[0]
                 if signatureType not in RollingSignature().SIGNATURE_TYPES:
-                    logger.exception(
+                    logging.exception(
                         "ROLLING_SIGNATURE: Not a valid rolling signature string!"
                     )
                     return None
                 signature = RollingSignature().parse(rollingSignature)
                 return signature
         except Exception as e:
-            logger.exception(e)
+            logging.exception(e)
             return None
