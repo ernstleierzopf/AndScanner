@@ -76,7 +76,6 @@ def func(input,report):
             static_analyzer.start()
         except Exception as e:
             logger.exception(str(e))
-            #print_exception()
 
 
 if __name__ == "__main__":

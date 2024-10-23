@@ -59,11 +59,11 @@ class StaticAnalyzer(object):
         # a = apk.APK(child.as_posix(), zipmodule=2)
         try:
             a = apk.APK(apk_path.as_posix())
-        except zipfile.BadZipFile:
-            msg = "Bad magic number for file header - path: %s" % apk_path
-            raise zipfile.BadZipFile(msg)
-        except TypeError as e:
-            logger.error("androguard: " + repr(e))
+        #except zipfile.BadZipFile:
+        #    msg = "Bad magic number for file header - path: %s" % apk_path
+        #    raise zipfile.BadZipFile(msg)
+        except Exception as e:
+            logger.error("androguard error for path %s: %s" % (apk_path, repr(e)))
             return None
         
         if not a.is_valid_APK():
@@ -79,15 +79,15 @@ class StaticAnalyzer(object):
         self.dex = self.target.get_all_dex()
         self.vm = []
         if self.dex == '':
-            print ('no dex')
+            print('no dex')
         else:
             try:
                 for tmp_dex in self.dex:
                     tmp_vm = dvm.DalvikVMFormat(tmp_dex)
                     self.vm.append(tmp_vm)
-            except zipfile.BadZipFile:
-                msg = "Bad magic number for file header - path: %s" % apk_path
-                raise zipfile.BadZipFile(msg)
+            except Exception as e:
+                logger.error("androguard error for path %s: %s" % (apk_path, repr(e)))
+                return None
 
         self.max_sdk_version = None
         self.min_sdk_version = None
@@ -267,9 +267,9 @@ class StaticAnalyzer(object):
         for comp in components:
             comp_is_exported = comp.get(ns+'exported')
             comp_permission = comp.get(ns+'permission')
-            if not comp_is_exported or comp_is_exported.lower()  != 'true':
-                continue
             comp_name = comp.get(ns+'name')
+            if not comp_is_exported or comp_is_exported.lower() != 'true' or comp_name is None:
+                continue
            
             tmp_package_name = _.get_package()
             if comp_name in activities or comp_name in services or comp_name in receivers or comp_name in providers:
@@ -292,7 +292,7 @@ class StaticAnalyzer(object):
                 if '..' in full_comp_name:
                     full_comp_name = full_comp_name.replace('..', '.')
 
-                if comp_permission != None:
+                if comp_permission is not None:
                     full_comp_name = full_comp_name + ': ' + comp_permission
 
                 if comp_type not in exported_components:
@@ -303,7 +303,7 @@ class StaticAnalyzer(object):
                 if '..' in full_comp_name:
                     full_comp_name = full_comp_name.replace('..', '.')
 
-                if comp_permission != None:
+                if comp_permission is not None:
                     full_comp_name = full_comp_name + ': ' + comp_permission
                 if full_comp_name not in exported_components:
                     exported_components.append(full_comp_name)
