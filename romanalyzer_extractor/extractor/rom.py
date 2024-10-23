@@ -101,8 +101,8 @@ class ROMExtractor(Extractor):
                 self.log.exception(e)
         if self.vbmeta_img is not None:
             self.prepare_vbmeta()
-            self.extract_vbmeta_digests()
-            self.verify_vbmeta()
+            success = self.verify_vbmeta()
+            self.extract_vbmeta_digests(success)
         else:
             keys = ["image"]
             digests = [self.target.name]
@@ -141,11 +141,11 @@ class ROMExtractor(Extractor):
             with open(self.vbmeta_img, "wb") as f:
                 f.write(data[pos:])
 
-    def extract_vbmeta_digests(self):
+    def extract_vbmeta_digests(self, verified):
         vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} calculate_vbmeta_digest --image \"{self.vbmeta_img}\""
         output = execute(vbmeta_digest_extraction_cmd)
-        keys = ["image", "vbmeta"]
-        digests = [self.target.name, output.replace("\n", "").strip()]
+        keys = ["image", "vbmeta", "verified"]
+        digests = [self.target.name, output.replace("\n", "").strip(), "0" if verified else "1"]
         vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} print_partition_digests --image \"{self.vbmeta_img}\""
         output = execute(vbmeta_digest_extraction_cmd)
         for line in output.split("\n"):
@@ -166,5 +166,6 @@ class ROMExtractor(Extractor):
             # known issue with Huawei vbmeta verification: https://github.com/berkeley-dev/huawei_quirks
             # None of the Vivo firmware images from https://www.vivo.com/uk/support/system-update can be verified
             self.log.debug("Failed to verify image with vbmeta.img.")
-        else:
-            self.log.debug("\tverified image with vbmeta.img successfully.")
+            return False
+        self.log.debug("\tverified image with vbmeta.img successfully.")
+        return True
