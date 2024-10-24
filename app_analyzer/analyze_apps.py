@@ -35,7 +35,7 @@ def get_analysis_queue(options):
             elif androconf.is_android(child.as_posix()) != 'APK':
                 # child is not a valid apk file
                 continue
-            print ("Android Type: APK")
+            print("Android Type: APK")
             analysis_queue.append(child)
     return analysis_queue
 
