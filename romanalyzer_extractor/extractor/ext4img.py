@@ -19,10 +19,11 @@ class Ext4ImgExtractor(Extractor):
             mount_cmd = "sudo " + mount_cmd
             umount_cmd = "sudo " + umount_cmd
         try:
-            os.mkdir(mount_point)
+            if not os.path.exists(mount_point):
+                os.mkdir(mount_point)
             subprocess.check_call(mount_cmd, shell=True, encoding='utf-8')
             try:
-                shutil.copytree(mount_point, self.extracted)
+                shutil.copytree(mount_point, self.extracted, dirs_exist_ok=True)
             except shutil.Error as e:
                 self.log.debug(f"Encountered errors when copying files from {mount_point}")
                 self.log.debug(e)
