@@ -6,7 +6,7 @@ import sys
 import os
 from pathlib import Path
 
-from androguard.core.bytecodes import dvm, apk
+from androguard.core import apk
 from utils import export_to_txt
 
 abs_path = os.path.abspath(os.path.dirname(__file__))
@@ -74,19 +74,8 @@ class StaticAnalyzer(object):
         self.target = a
         self.target_path = apk_path
         # parse classes.dex of the target apk
-#        self.dex = self.target.get_dex()
         self.dex = self.target.get_all_dex()
         self.vm = []
-        if self.dex == '':
-            print('no dex')
-        else:
-            try:
-                for tmp_dex in self.dex:
-                    tmp_vm = dvm.DalvikVMFormat(tmp_dex)
-                    self.vm.append(tmp_vm)
-            except Exception as e:
-                logger.error("androguard error for path %s: %s" % (apk_path, repr(e)))
-                return None
 
         self.max_sdk_version = None
         self.min_sdk_version = None

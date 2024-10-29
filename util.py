@@ -42,6 +42,10 @@ def transform_path(extracted_image_path: str):
     for path in extracted_image_path.rglob("**/*system*/build.prop"):
         path_input = path
         break
+    if not path_input:
+        for path in extracted_image_path.rglob("**/*system*/etc/build.prop"):
+            path_input = path
+            break
 
     # Check for false-y value.
     if not path_input:
