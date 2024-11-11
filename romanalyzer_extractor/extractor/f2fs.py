@@ -22,7 +22,7 @@ class F2fsImgExtractor(Extractor):
             os.mkdir(mount_point)
             subprocess.check_call(mount_cmd, shell=True, encoding='utf-8')
             try:
-                shutil.copytree(mount_point, self.extracted)
+                shutil.copytree(mount_point, self.extracted, symlinks=True)
             except shutil.Error as e:
                 self.log.debug(f"Encountered errors when copying files from {mount_point}")
                 self.log.debug(e)
