@@ -11,7 +11,7 @@ class MetadataExtractor(Extractor):
         file_metadata_path = os.path.join(self.target_path, "file-metadata.csv")
         if not os.path.exists(file_metadata_path):
             with open(file_metadata_path, "w") as f:
-                f.write("Path;Hash;Size;ELF-Build-ID\n")
+                f.write("Hash;Path;Size;ELF-Build-ID\n")
         with open(file_metadata_path, "a") as f:
             file_type = magic.from_file(str(self.target))
             sha1sum = hashlib.sha1()
@@ -21,7 +21,7 @@ class MetadataExtractor(Extractor):
                     sha1sum.update(block)
                     block = fd.read(2 ** 16)
             sha1sum = sha1sum.hexdigest()
-            metadata = f"{str(self.target.absolute()).replace(str(Path(self.target_path).absolute()) + '/', '').replace('.extracted', '').split('/', 1)[1]};{sha1sum};{self.target.stat().st_size};"
+            metadata = f"{sha1sum};{str(self.target.absolute()).replace(str(Path(self.target_path).absolute()) + '/', '').replace('.extracted', '').split('/', 1)[1]};{self.target.stat().st_size};"
             if "ELF" in file_type:
                 cmd = f'readelf -n "{str(self.target)}"'
                 output = execute(cmd, suppress_output=True)
