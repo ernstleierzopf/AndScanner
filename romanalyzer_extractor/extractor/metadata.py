@@ -11,7 +11,7 @@ class MetadataExtractor(Extractor):
         file_metadata_path = os.path.join(self.target_path, "file-metadata.csv")
         if not os.path.exists(file_metadata_path):
             with open(file_metadata_path, "w") as f:
-                f.write("Path;Hash;Size;ELF Build ID\n")
+                f.write("Path;Hash;Size;ELF-Build-ID\n")
         with open(file_metadata_path, "a") as f:
             file_type = magic.from_file(str(self.target))
             sha1sum = hashlib.sha1()
