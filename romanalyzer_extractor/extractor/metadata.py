@@ -21,7 +21,7 @@ class MetadataExtractor(Extractor):
                     sha1sum.update(block)
                     block = fd.read(2 ** 16)
             sha1sum = sha1sum.hexdigest()
-            metadata = f"{sha1sum};{str(self.target.absolute()).replace(str(Path(self.target_path).absolute()) + '/', '').replace('.extracted', '').split('/', 1)[1]};{self.target.stat().st_size};"
+            metadata = f"{sha1sum};{str(self.target.absolute()).replace(str(Path(self.target_path).absolute()) + '/', '').replace('.extracted', '').replace('.raw', '').split('/', 1)[1]};{self.target.stat().st_size};"
             if "ELF" in file_type:
                 cmd = f'readelf -n "{str(self.target)}"'
                 output = execute(cmd, suppress_output=True)
