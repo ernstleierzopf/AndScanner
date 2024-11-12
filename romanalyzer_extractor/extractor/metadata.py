@@ -30,8 +30,8 @@ class MetadataExtractor(Extractor):
                 for line in output_lines:
                     line = line.strip()
                     if line.startswith("Build ID: "):
-                        metadata += line.replace("Build ID: ", "") + ";"
+                        metadata += line.replace("Build ID: ", "")
                     if "Shared library: [" in line:
                         libraries.append(line.split("Shared library: [")[1][:-1])
-                metadata += ", ".join(libraries)
+                metadata += ";" + ", ".join(libraries)
             f.write(metadata+"\n")
