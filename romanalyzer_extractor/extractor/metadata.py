@@ -23,11 +23,15 @@ class MetadataExtractor(Extractor):
             sha1sum = sha1sum.hexdigest()
             metadata = f"{sha1sum};{str(self.target.absolute()).replace(str(Path(self.target_path).absolute()) + '/', '').replace('.extracted', '').replace('.raw', '').split('/', 1)[1]};{self.target.stat().st_size};"
             if "ELF" in file_type:
-                cmd = f'readelf -n "{str(self.target)}"'
+                cmd = f'readelf -a "{str(self.target)}"'
                 output = execute(cmd, suppress_output=True)
                 output_lines = output.split('\n')
+                libraries = []
                 for line in output_lines:
                     line = line.strip()
                     if line.startswith("Build ID: "):
                         metadata += line.replace("Build ID: ", "")
+                    if line.contains("Shared library: ["):
+                        libraries.append(line.split("Shared library: [")[1][:-1])
+                metadata += ", ".join(libraries)
             f.write(metadata+"\n")
