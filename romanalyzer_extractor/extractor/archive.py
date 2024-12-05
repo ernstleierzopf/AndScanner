@@ -26,7 +26,7 @@ class ArchiveExtractor(Extractor):
         #elif suffix == '.zip':
         #    extract_cmd = 'unzip -P x -o "{}" -d "{}"'.format(abspath, self.extracted)
         elif suffix == '.rar':
-            extract_cmd = 'unrar -p x "{}" "{}/" -y'.format(abspath, self.extracted)
+            extract_cmd = 'unrar -px  x "{}" "{}/" -y'.format(abspath, self.extracted)
         elif suffix in ('.7z', '.zip', '.ext4', '.rar'):
             extract_cmd = '7z -p x "{}" -o"{}" -y'.format(abspath, self.extracted)
         elif suffix == ".raw":
