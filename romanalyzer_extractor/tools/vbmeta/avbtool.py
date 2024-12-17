@@ -783,7 +783,12 @@ class ImageHandler(object):
     self.block_size = 4096
     self._file_pos = 0
     if self._read_only:
-      self._image = open(self.filename, 'rb')
+      if os.path.exists(self.filename):
+        self._image = open(self.filename, 'rb')
+      else:
+        print(os.path.basename(self.filename).replace(".img", "") + ":")
+        self._image = None
+        return
     else:
       self._image = open(self.filename, 'r+b')
     self._image.seek(0, os.SEEK_END)
@@ -1530,6 +1535,9 @@ class AvbHashtreeDescriptor(AvbDescriptor):
       image = ImageHandler(image_filename, read_only=True)
     # Generate the hashtree and checks that it matches what's in the file.
     digest_size = self._hashtree_digest_size()
+    if image._image is None:
+        print("_image not found! Stopping..")
+        return False
     digest_padding = round_to_pow2(digest_size) - digest_size
     (hash_level_offsets, tree_size) = calc_hash_level_offsets(
         self.image_size, self.data_block_size, digest_size + digest_padding)
@@ -1539,6 +1547,7 @@ class AvbHashtreeDescriptor(AvbDescriptor):
                                                 digest_padding,
                                                 hash_level_offsets,
                                                 tree_size)
+
     # The root digest must match unless it is not embedded in the descriptor.
     if self.root_digest and root_digest != self.root_digest:
       sys.stderr.write('hashtree of {} does not match descriptor\n'.
@@ -2552,6 +2561,9 @@ class Avb(object):
           image_filename))
 
     image = ImageHandler(image_filename, read_only=True)
+    if image._image is None:
+      print("_image not found! Stopping..")
+      return
     (footer, header, descriptors, _) = self._parse_image(image)
     offset = 0
     if footer:
@@ -2597,7 +2609,9 @@ class Avb(object):
                       hashlib.sha1(desc.public_key).hexdigest()))
       elif not desc.verify(image_dir, image_ext, expected_chain_partitions_map,
                            image, accept_zeroed_hashtree):
-        raise AvbError('Error verifying descriptor.')
+        print("Error verifying descriptor.")
+        verified = False
+        #raise AvbError('Error verifying descriptor.')
       # Honor --follow_chain_partitions - add '--' to make the output more
       # readable.
       if (isinstance(desc, AvbChainPartitionDescriptor)
@@ -2645,6 +2659,8 @@ class Avb(object):
       AvbError: If getting the partition digests from the image fails.
     """
     image = ImageHandler(image_filename, read_only=True)
+    if image._image is None:
+      return
     (_, _, descriptors, _) = self._parse_image(image)
 
     for desc in descriptors:
@@ -2699,6 +2715,9 @@ class Avb(object):
         ch_image_filename = os.path.join(image_dir,
                                          desc.partition_name + image_ext)
         ch_image = ImageHandler(ch_image_filename, read_only=True)
+        if ch_image._image is None:
+            print("_image not found! Stopping..")
+            return
         (ch_footer, ch_header, _, _) = self._parse_image(ch_image)
         ch_offset = 0
         ch_size = (ch_header.SIZE + ch_header.authentication_data_block_size +

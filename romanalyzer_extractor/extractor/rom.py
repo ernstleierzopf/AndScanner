@@ -146,6 +146,8 @@ class ROMExtractor(Extractor):
         vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} calculate_vbmeta_digest --image \"{self.vbmeta_img}\""
         output = execute(vbmeta_digest_extraction_cmd)
         keys = ["image", "vbmeta", "verified"]
+        if "_image not found! Stopping.." in output:
+            output = ""
         digests = [self.target.name, output.replace("\n", "").strip(), "0" if verified else "1"]
         vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} print_partition_digests --image \"{self.vbmeta_img}\""
         output = execute(vbmeta_digest_extraction_cmd)
@@ -161,6 +163,7 @@ class ROMExtractor(Extractor):
         self.log.debug("\tstored digests in {}".format(os.path.join(self.target_path, "vbmeta-digests.csv")))
 
     def verify_vbmeta(self):
+        # if .img files are not found, they are skipped. But as long all found img files can be verified, verification succeeds.
         verify_vbmeta_cmd = f"python3 {self.avbtool} verify_image --image \"{self.vbmeta_img}\" --follow_chain_partitions"
         output, exit_code = execute(verify_vbmeta_cmd, return_exit_code=True)
         if exit_code != 0:
