@@ -786,7 +786,7 @@ class ImageHandler(object):
       if os.path.exists(self.filename):
         self._image = open(self.filename, 'rb')
       else:
-        print(os.path.basename(self.filename).replace(".img", "") + ":")
+        print(os.path.basename(self.filename).replace(".img", "") + ": missing")
         self._image = None
         return
     else:
