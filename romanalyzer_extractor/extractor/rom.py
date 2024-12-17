@@ -22,7 +22,6 @@ from romanalyzer_extractor.extractor.erofsimg import ErofsImgExtractor
 from romanalyzer_extractor.extractor.metadata import MetadataExtractor
 
 
-
 class ROMExtractor(Extractor):
     def __init__(self, target, target_path=None):
         super().__init__(target, target_path)
@@ -65,6 +64,8 @@ class ROMExtractor(Extractor):
                                               "vbmeta_vendor.img"):
                     self.partition_paths.append(abspath)
                 elif abspath.name.lower() == "vbmeta.img":
+                    self.vbmeta_img = abspath
+                elif abspath.name.lower() == "vbmeta-sign.img":
                     self.vbmeta_img = abspath
             self.process_queue.extend(target)
         elif isinstance(target, Path): 
