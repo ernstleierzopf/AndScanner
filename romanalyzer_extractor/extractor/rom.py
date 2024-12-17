@@ -147,7 +147,7 @@ class ROMExtractor(Extractor):
         output = execute(vbmeta_digest_extraction_cmd)
         keys = ["image", "vbmeta", "verified"]
         if "_image not found! Stopping.." in output:
-            output = ""
+            output = "missing partitions"
         digests = [self.target.name, output.replace("\n", "").strip(), "0" if verified else "1"]
         vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} print_partition_digests --image \"{self.vbmeta_img}\""
         output = execute(vbmeta_digest_extraction_cmd)
