@@ -38,7 +38,7 @@ class SparseImgExtractor(Extractor):
                     os.unlink(os.path.join(dir_path, file))
             if self.target.name.lower().startswith("super."):
                 self.target = self.target.parents[0] / "super.img"
-        elif self.target.name.startswith("super_"):
+        elif self.target.name.lower().startswith("super_"):
             raw_img = self.target.parents[0] / (self.target.name + '.raw')
             convert_cmd = '{simg2img} "{sparse_img}" "{output}"'.format(
                 simg2img=self.tool,
