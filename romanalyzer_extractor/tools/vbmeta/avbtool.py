@@ -2646,8 +2646,7 @@ class Avb(object):
     json_partitions = None
     if as_json:
       json_partitions = []
-    self._print_partition_digests(
-        image_filename, output, json_partitions, image_dir, image_ext)
+    self._print_partition_digests(image_filename, output, json_partitions, image_dir, image_ext)
     if as_json:
       output.write(json.dumps({'partitions': json_partitions}, indent=2))
 
@@ -2687,8 +2686,9 @@ class Avb(object):
         else:
           output.write('{}: {}\n'.format(desc.partition_name, digest))
       elif isinstance(desc, AvbChainPartitionDescriptor):
-        chained_image_filename = os.path.join(image_dir,
-                                              desc.partition_name + image_ext)
+        chained_image_filename = os.path.join(image_dir, desc.partition_name + image_ext)
+        if not os.path.exists(chained_image_filename):
+            chained_image_filename = os.path.join(image_dir, desc.partition_name.upper() + image_ext)
         self._print_partition_digests(
             chained_image_filename, output, json_partitions, image_dir,
             image_ext)
@@ -2720,8 +2720,10 @@ class Avb(object):
 
     for desc in descriptors:
       if isinstance(desc, AvbChainPartitionDescriptor):
-        ch_image_filename = os.path.join(image_dir,
-                                         desc.partition_name + image_ext)
+        ch_image_filename = os.path.join(image_dir, desc.partition_name + image_ext)
+        if not os.path.exists(ch_image_filename):
+            ch_image_filename = os.path.join(image_dir, desc.partition_name.upper() + image_ext)
+
         ch_image = ImageHandler(ch_image_filename, read_only=True)
         if ch_image._image is None:
             print("_image not found! Stopping..")
