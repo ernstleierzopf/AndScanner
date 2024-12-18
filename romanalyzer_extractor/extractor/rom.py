@@ -67,6 +67,8 @@ class ROMExtractor(Extractor):
                     self.vbmeta_img = abspath
                 elif abspath.name.lower() == "vbmeta-sign.img":
                     self.vbmeta_img = abspath
+                elif abspath.name.lower() == "vbmeta.bin":
+                    self.vbmeta_img = abspath
             self.process_queue.extend(target)
         elif isinstance(target, Path): 
             self.process_queue.append(target)
