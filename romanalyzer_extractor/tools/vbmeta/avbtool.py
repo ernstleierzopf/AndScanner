@@ -2600,6 +2600,7 @@ class Avb(object):
       print('vbmeta: Successfully verified {} vbmeta struct in {}'
             .format(alg_name, image.filename))
 
+    verified = True
     for desc in descriptors:
       if isinstance(desc, AvbChainPartitionDescriptor) and not os.path.exists(os.path.join(image_dir, desc.partition_name + image_ext)):
           desc.partition_name = desc.partition_name.upper()
@@ -2625,8 +2626,9 @@ class Avb(object):
           and follow_chain_partitions):
         print('--')
         chained_image_filename = os.path.join(image_dir, desc.partition_name + image_ext)
-        self.verify_image(chained_image_filename, key_path, None, False,
-                          accept_zeroed_hashtree)
+        res = self.verify_image(chained_image_filename, key_path, None, False, accept_zeroed_hashtree)
+        verified = verified or res
+    return verified
 
   def print_partition_digests(self, image_filename, output, as_json):
     """Implements the 'print_partition_digests' command.
@@ -4966,10 +4968,12 @@ Please use '--hash_algorithm sha256'.
 
   def verify_image(self, args):
     """Implements the 'verify_image' sub-command."""
-    self.avb.verify_image(args.image.name, args.key,
-                          args.expected_chain_partition,
-                          args.follow_chain_partitions,
-                          args.accept_zeroed_hashtree)
+    result = self.avb.verify_image(args.image.name, args.key,
+                                   args.expected_chain_partition,
+                                   args.follow_chain_partitions,
+                                   args.accept_zeroed_hashtree)
+    if result is False:
+        raise AvbError("Verification failed or no partitions found to be verified.")
 
   def print_partition_digests(self, args):
     """Implements the 'print_partition_digests' sub-command."""
