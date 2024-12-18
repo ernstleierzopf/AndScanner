@@ -1704,6 +1704,8 @@ class AvbHashDescriptor(AvbDescriptor):
       image = image_containing_descriptor
     else:
       image_filename = os.path.join(image_dir, self.partition_name + image_ext)
+      if not os.path.exists(image_filename):
+          image_filename = os.path.join(image_dir, self.partition_name.upper() + image_ext)
       image = ImageHandler(image_filename, read_only=True)
     data = image.read(self.image_size)
     ha = hashlib.new(self.hash_algorithm)
@@ -1927,6 +1929,8 @@ class AvbChainPartitionDescriptor(AvbDescriptor):
       True if the descriptor verifies, False otherwise.
     """
     value = expected_chain_partitions_map.get(self.partition_name)
+    if value is None:
+        value = expected_chain_partitions_map.get(self.partition_name.upper())
     if not value:
       sys.stderr.write('No expected chain partition for partition {}. Use '
                        '--expected_chain_partition to specify expected '
@@ -2597,9 +2601,12 @@ class Avb(object):
             .format(alg_name, image.filename))
 
     for desc in descriptors:
+      if isinstance(desc, AvbChainPartitionDescriptor) and not os.path.exists(os.path.join(image_dir, desc.partition_name + image_ext)):
+          desc.partition_name = desc.partition_name.upper()
       if (isinstance(desc, AvbChainPartitionDescriptor)
           and follow_chain_partitions
-          and expected_chain_partitions_map.get(desc.partition_name) is None):
+          and expected_chain_partitions_map.get(desc.partition_name) is None
+          and expected_chain_partitions_map.get(desc.partition_name.upper()) is None):
         # In this case we're processing a chain descriptor but don't have a
         # --expect_chain_partition ... however --follow_chain_partitions was
         # specified so we shouldn't error out in desc.verify().
@@ -2617,8 +2624,7 @@ class Avb(object):
       if (isinstance(desc, AvbChainPartitionDescriptor)
           and follow_chain_partitions):
         print('--')
-        chained_image_filename = os.path.join(image_dir,
-                                              desc.partition_name + image_ext)
+        chained_image_filename = os.path.join(image_dir, desc.partition_name + image_ext)
         self.verify_image(chained_image_filename, key_path, None, False,
                           accept_zeroed_hashtree)
 
