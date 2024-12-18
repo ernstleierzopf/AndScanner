@@ -56,23 +56,6 @@ def classify(target):
     if target.suffix in INTERESTING_EXT:
         return target.suffix.strip('.')
 
-    # special types.
-    if file_type == "data":
-        if target.name == 'payload.bin':
-            return 'otapayload'
-
-        if target.suffix in ('.img', '.raw'):  # just try extracting as EROFS fs - better than doing nothing.  # and 'UPDATE.APP' in str(target):
-            return 'erofsimg'
-
-        if target.suffix in ('.img', '.bin', '.raw'):
-            return 'dataimg'
-
-        if target.suffix == '.pac':
-            return 'pac'
-
-        else:
-            return 'data'
-
     if "F2FS" in file_type:
         return "f2fs"
 
@@ -107,5 +90,22 @@ def classify(target):
     # archive file
     if target.suffix in ARCHIVE_EXT or file_mime_type == 'application/zip':
         return "archive"
+
+    # special types.
+    if file_type == "data":
+        if target.name == 'payload.bin':
+            return 'otapayload'
+
+        if target.suffix in ('.img', '.raw'):  # just try extracting as EROFS fs - better than doing nothing.  # and 'UPDATE.APP' in str(target):
+            return 'erofsimg'
+
+        if target.suffix in ('.img', '.bin', '.raw'):
+            return 'dataimg'
+
+        if target.suffix == '.pac':
+            return 'pac'
+
+        else:
+            return 'data'
 
     return 'unknown'
