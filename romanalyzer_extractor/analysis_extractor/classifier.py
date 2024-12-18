@@ -56,10 +56,6 @@ def classify(target):
     if target.suffix in INTERESTING_EXT:
         return target.suffix.strip('.')
 
-    # archive file
-    if target.suffix in ARCHIVE_EXT or file_mime_type == 'application/zip':
-        return "archive"
-
     # special types.
     if file_type == "data":
         if target.name == 'payload.bin':
@@ -107,5 +103,9 @@ def classify(target):
 
     if file_type == "OpenPGP Public Key":
         return "ofp"
+
+    # archive file
+    if target.suffix in ARCHIVE_EXT or file_mime_type == 'application/zip':
+        return "archive"
 
     return 'unknown'
