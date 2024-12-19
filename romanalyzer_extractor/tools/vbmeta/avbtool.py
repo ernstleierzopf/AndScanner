@@ -4201,6 +4201,8 @@ def generate_hash_tree(image, image_size, block_size, hash_alg_name, salt,
         data = hash_ret[offset:offset + block_size]
       hasher.update(data)
 
+      if len(data) == 0:
+          break
       remaining -= len(data)
       if len(data) < block_size:
         hasher.update(b'\0' * (block_size - len(data)))
