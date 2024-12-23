@@ -20,6 +20,7 @@ from romanalyzer_extractor.extractor.f2fs import F2fsImgExtractor
 from romanalyzer_extractor.extractor.pac import PacExtractor
 from romanalyzer_extractor.extractor.erofsimg import ErofsImgExtractor
 from romanalyzer_extractor.extractor.metadata import MetadataExtractor
+from romanalyzer_extractor.extractor.sonyimg import SonyImgExtractor
 
 
 class ROMExtractor(Extractor):
@@ -49,29 +50,36 @@ class ROMExtractor(Extractor):
             'f2fs': F2fsImgExtractor,
             'pac': PacExtractor,
             'erofsimg': ErofsImgExtractor,
+            'sonyimg': SonyImgExtractor,
             'elf': MetadataExtractor, 'ko': MetadataExtractor, 'so': MetadataExtractor, 'dex': MetadataExtractor, 'odex': MetadataExtractor,
             'apk': MetadataExtractor, 'jar': MetadataExtractor, 'apex': MetadataExtractor, 'vdex': MetadataExtractor
         }
 
     def enqueue(self, target):
-        if isinstance(target, list):
-            for item in target:
-                abspath = item.absolute()
-                if abspath.name.lower().startswith("bootloader") and abspath.name.lower().endswith(".img"):
+        if target is None:
+            return
+        if isinstance(target, Path):
+            target = [target]
+        for item in target:
+            abspath = item.absolute()
+            if abspath.name.lower().startswith("bootloader") and abspath.name.lower().endswith(".img"):
+                cnt = 0
+                for i in self.process_queue:
+                    if i.name.lower().startswith("bootloader") and i.name.lower().endswith(".img"):
+                        cnt += 1
+                if cnt == 1:
                     self.bootloader_img = abspath
                     target.remove(item)
-                elif abspath.name.lower() in ("boot.img", "recovery.img", "system.img", "dtbo.img", "vendor.img", "vbmeta_system.img",
-                                              "vbmeta_vendor.img"):
-                    self.partition_paths.append(abspath)
-                elif abspath.name.lower() == "vbmeta.img":
-                    self.vbmeta_img = abspath
-                elif abspath.name.lower() == "vbmeta-sign.img":
-                    self.vbmeta_img = abspath
-                elif abspath.name.lower() == "vbmeta.bin":
-                    self.vbmeta_img = abspath
-            self.process_queue.extend(target)
-        elif isinstance(target, Path): 
-            self.process_queue.append(target)
+            elif abspath.name.lower() in ("boot.img", "recovery.img", "system.img", "dtbo.img", "vendor.img", "vbmeta_system.img",
+                                          "vbmeta_vendor.img"):
+                self.partition_paths.append(abspath)
+            elif abspath.name.lower() == "vbmeta.img":
+                self.vbmeta_img = abspath
+            elif abspath.name.lower() == "vbmeta-sign.img":
+                self.vbmeta_img = abspath
+            elif abspath.name.lower() == "vbmeta.bin":
+                self.vbmeta_img = abspath
+        self.process_queue.extend(target)
 
     def extract(self):
         self.log.debug('add {} to process queue'.format(self.target))

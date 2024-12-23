@@ -8,7 +8,7 @@ from romanalyzer_extractor.extractor.f2fs import F2fsImgExtractor
 from romanalyzer_extractor.extractor.erofsimg import ErofsImgExtractor
 from romanalyzer_extractor.extractor.extimg import ExtImgExtractor
 from romanalyzer_extractor.extractor.ext4img import Ext4ImgExtractor
-from romanalyzer_extractor.analysis_extractor.classifier import classify
+from romanalyzer_extractor.analysis_extractor.classifier import classify, get_file_type
 
 
 # known (partially) not working extraction:
@@ -70,6 +70,9 @@ class SparseImgExtractor(Extractor):
             raw_img = self.target
         elif "sparsechunk" in self.target.name or self.target.name == "userdata.img":
             return None
+        elif self.target.name == "super.bin" or (self.target.name.lower().startswith("super") and "Android sparse image" not in get_file_type(self.target)):
+            raw_img = self.target
+            self.target = self.target.parents[0] / "super.img"
         else:
             raw_img = self.target.parents[0] / (self.target.name+'.raw')
             convert_cmd = '{simg2img} "{sparse_img}" "{output}"'.format(

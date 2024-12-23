@@ -26,12 +26,16 @@ class F2fsImgExtractor(Extractor):
             except shutil.Error as e:
                 self.log.debug(f"Encountered errors when copying files from {mount_point}")
                 self.log.debug(e)
-            subprocess.check_call(umount_cmd, shell=True, encoding='utf-8')
-            shutil.rmtree(mount_point)
             if abspath.exists():
                 abspath.unlink()
         except subprocess.CalledProcessError as e:
             self.log.error(f"Could not mount {self.target} to {mount_point}. Skipping {self.target}..")
+            self.log.exception(e)
+        try:
+            subprocess.check_call(umount_cmd, shell=True, encoding='utf-8')
+            shutil.rmtree(mount_point)
+        except subprocess.CalledProcessError as e:
+            self.log.error(f"Could not umount {mount_point}.")
             self.log.exception(e)
 
         if self.extracted is None or not self.extracted.exists():

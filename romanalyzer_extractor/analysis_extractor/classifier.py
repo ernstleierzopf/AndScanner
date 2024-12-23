@@ -4,7 +4,7 @@ from pathlib import Path
 from romanalyzer_extractor.utils import log
 
 EXT_EXT = ('ext2', 'ext3', 'ext4')
-ARCHIVE_EXT = ('.gz', '.tgz', '.bz2', '.xz', '.tar', '.zip', '.rar', '.7z','.md5','.APP','.lz4')
+ARCHIVE_EXT = ('.gz', '.tgz', '.bz2', '.xz', '.tar', '.zip', '.rar', '.7z', '.md5', '.APP', '.lz4', '.ftf')
 INTERESTING_EXT = ('.ko', '.so', '.dex', '.odex', '.apk', '.jar', '.ozip', '.apex', '.vdex')
 
 
@@ -78,6 +78,9 @@ def classify(target):
     if "Android sparse image" in file_type:
         return "sparseimg"
 
+    if target.name.lower() in ("super.img", "super.bin"):
+        return "sparseimg"
+
     # ext2/3/4 filesystem
     if any(ext in file_type for ext in EXT_EXT):
         if subprocess.run(["blkid", "-o", "value", "-s", "TYPE", str(target)], capture_output=True).stdout.decode().strip() == "ext4":
@@ -87,8 +90,11 @@ def classify(target):
     if file_type == "OpenPGP Public Key":
         return "ofp"
 
+    if target.suffix == ".sin":
+        return "sonyimg"
+
     # archive file
-    if target.suffix in ARCHIVE_EXT or file_mime_type == 'application/zip':
+    if target.suffix in ARCHIVE_EXT or file_mime_type == 'application/zip' or file_mime_type == 'application/x-tar':
         return "archive"
 
     # special types.
@@ -107,5 +113,4 @@ def classify(target):
 
         else:
             return 'data'
-
     return 'unknown'

@@ -1,3 +1,4 @@
+from pathlib import Path
 from romanalyzer_extractor.utils import execute
 from romanalyzer_extractor.extractor.base import Extractor
 
@@ -27,7 +28,7 @@ class ArchiveExtractor(Extractor):
         #    extract_cmd = 'unzip -P x -o "{}" -d "{}"'.format(abspath, self.extracted)
         elif suffix == '.rar':
             extract_cmd = 'unrar -px  x "{}" "{}/" -y'.format(abspath, self.extracted)
-        elif suffix in ('.7z', '.zip', '.ext4', '.rar'):
+        elif suffix in ('.7z', '.zip', '.ext4', '.rar', '.ftf'):
             extract_cmd = '7z -pfotatest1234 x "{}" -o"{}" -y'.format(abspath, self.extracted)
         elif suffix == ".raw":
             extract_cmd = '7z -p x "{}" -o"{}" -y'.format(abspath, self.extracted)
@@ -37,6 +38,9 @@ class ArchiveExtractor(Extractor):
                 extract_cmd = extract_cmd+' && tar -xf "{}" -C "{}"'.format(abspath, self.extracted)
             else:
                 return None
+        elif suffix == '.img':
+            extract_cmd = 'mkdir "{}"'.format(self.extracted)
+            extract_cmd = extract_cmd + ' && tar -xf "{}" -C "{}"'.format(abspath, self.extracted)
         elif suffix == '.APP' and str(abspath).find("UPDATE.APP") != -1:
             extract_cmd = 'perl romanalyzer_extractor/tools/huawei_erofs/split_updata.pl "{}" "{}"'.format(abspath, self.extracted)
         elif suffix == '.lz4':
