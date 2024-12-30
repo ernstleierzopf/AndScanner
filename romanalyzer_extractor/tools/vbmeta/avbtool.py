@@ -4201,10 +4201,10 @@ def generate_hash_tree(image, image_size, block_size, hash_alg_name, salt,
         data = hash_ret[offset:offset + block_size]
       hasher.update(data)
 
-      if len(data) == 0:
-          break
       remaining -= len(data)
       if len(data) < block_size:
+        if len(data) == 0:
+          break
         hasher.update(b'\0' * (block_size - len(data)))
       level_output_list.append(hasher.digest())
       if digest_padding > 0:
