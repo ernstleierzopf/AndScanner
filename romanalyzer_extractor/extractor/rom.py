@@ -154,7 +154,7 @@ class ROMExtractor(Extractor):
 
     def extract_vbmeta_digests(self, verified):
         vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} calculate_vbmeta_digest --image \"{self.vbmeta_img}\""
-        output, exit_code = execute(vbmeta_digest_extraction_cmd, return_exit_code=True)
+        output, exit_code = execute(vbmeta_digest_extraction_cmd, return_exit_code=True, suppress_output=True)
         keys = ["image", "vbmeta", "verified"]
         if exit_code != 0:
             output = "missing partitions"
@@ -174,7 +174,7 @@ class ROMExtractor(Extractor):
 
     def verify_vbmeta(self):
         # if .img files are not found, they are skipped. But as long all found img files can be verified, verification succeeds.
-        verify_vbmeta_cmd = f"python3 {self.avbtool} verify_image --image \"{self.vbmeta_img}\" --follow_chain_partitions"
+        verify_vbmeta_cmd = f"python3 {self.avbtool} verify_image --image \"{self.vbmeta_img}\" --follow_chain_partitions --allow_missing_partitions"
         output, exit_code = execute(verify_vbmeta_cmd, return_exit_code=True)
         if exit_code != 0:
             # known issue with Huawei vbmeta verification: https://github.com/berkeley-dev/huawei_quirks
