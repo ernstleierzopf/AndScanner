@@ -112,6 +112,7 @@ class ROMExtractor(Extractor):
                 self.log.exception(e)
         if self.vbmeta_img is not None:
             self.prepare_vbmeta()
+            self.rename_missing_vbmeta_files()
             success = self.verify_vbmeta()
             self.extract_vbmeta_digests(success)
         else:
@@ -175,7 +176,8 @@ class ROMExtractor(Extractor):
     def verify_vbmeta(self):
         # if .img files are not found, they are skipped. But as long all found img files can be verified, verification succeeds.
         verify_vbmeta_cmd = f"python3 {self.avbtool} verify_image --image \"{self.vbmeta_img}\" --follow_chain_partitions --allow_missing_partitions"
-        output, exit_code = execute(verify_vbmeta_cmd, return_exit_code=True)
+        output, exit_code = execute(verify_vbmeta_cmd, return_exit_code=True, redirect_stderr_stdout=True)
+        self.log.debug("vbmeta output: " + output)
         if exit_code != 0:
             # known issue with Huawei vbmeta verification: https://github.com/berkeley-dev/huawei_quirks
             # None of the Vivo firmware images from https://www.vivo.com/uk/support/system-update can be verified
@@ -183,3 +185,24 @@ class ROMExtractor(Extractor):
             return False
         self.log.debug("\tverified image with vbmeta.img successfully.")
         return True
+
+    def rename_missing_vbmeta_files(self):
+        vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} print_partition_digests --image \"{self.vbmeta_img}\""
+        output = execute(vbmeta_digest_extraction_cmd)
+        for line in output.split("\n"):
+            if line == "":
+                continue
+            key, digest = line.split(":")
+            if digest.strip() == "missing":
+                for file in os.listdir(os.path.dirname(self.vbmeta_img)):
+                    if file.endswith(".raw") or file.endswith(".extracted"):
+                        continue
+                    basename, extension = os.path.splitext(file)
+                    if key[:16].lower() == basename.lower():
+                        if basename.isupper():
+                            newfile = os.path.join(os.path.dirname(self.vbmeta_img), key.upper() + extension)
+                            os.rename(os.path.join(os.path.dirname(self.vbmeta_img), file), newfile)
+                        else:
+                            newfile = os.path.join(os.path.dirname(self.vbmeta_img), key + extension)
+                            os.rename(os.path.join(os.path.dirname(self.vbmeta_img), file), newfile)
+                        self.log.debug("renamed " + file + " to " + os.path.basename(newfile))

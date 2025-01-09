@@ -2,6 +2,7 @@ import os
 import shutil
 import logging.config
 import subprocess
+import traceback
 from pathlib import Path
 from configparser import ConfigParser
 
@@ -173,19 +174,23 @@ def rmdir(d):
     except Exception as e:
         log.exception(e)
 
-def execute(cmd, showlog=True, suppress_output=False, return_exit_code=False):
+def execute(cmd, showlog=True, suppress_output=False, return_exit_code=False, redirect_stderr_stdout=False):
     output = ''
     try:
-        exit_code = 0
         stderr = None
         if suppress_output:
             stderr = subprocess.DEVNULL
-        output = subprocess.check_output(cmd, shell=True, encoding='utf-8', stderr=stderr)
+        if redirect_stderr_stdout:
+            stderr = subprocess.STDOUT
+        result = subprocess.run(cmd, shell=True, encoding='utf-8', text=True, stdout=subprocess.PIPE, stderr=stderr, timeout=1200)
+        output = result.stdout
+        exit_code = result.returncode
+        result.check_returncode()
         if showlog: log.debug(u"Success execute: {}".format(cmd))
     except Exception as e:
         exit_code = e.returncode
         if not suppress_output:
-            log.exception(e)
+            log.debug(''.join(traceback.format_tb(e.__traceback__)))
     if return_exit_code:
         return output, exit_code
     return output
