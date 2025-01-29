@@ -1,4 +1,5 @@
 import os
+import base64
 from pathlib import Path
 
 from romanalyzer_extractor.analysis_extractor.classifier import classify
@@ -156,10 +157,13 @@ class ROMExtractor(Extractor):
     def extract_vbmeta_digests(self, verified):
         vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} calculate_vbmeta_digest --image \"{self.vbmeta_img}\""
         output, exit_code = execute(vbmeta_digest_extraction_cmd, return_exit_code=True, suppress_output=True)
-        keys = ["image", "vbmeta", "verified"]
+        keys = ["image", "vbmeta", "verified", "image_info"]
         if exit_code != 0:
             output = "missing partitions"
         digests = [self.target.name, output.replace("\n", "").strip(), "0" if verified else "1"]
+        vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} info_image --image \"{self.vbmeta_img}\""
+        output = execute(vbmeta_digest_extraction_cmd)
+        digests.append(base64.b64encode(output.encode()).decode())
         vbmeta_digest_extraction_cmd = f"python3 {self.avbtool} print_partition_digests --image \"{self.vbmeta_img}\""
         output = execute(vbmeta_digest_extraction_cmd)
         for line in output.split("\n"):
