@@ -54,7 +54,7 @@ $ deactivate
 
 To scan and analyze an image:
 ```shell
-$ python3 scan.py "path/to/image.zip" "android-api-level"
+$ python3 scan.py "path/to/image.zip" "path/to/extraction/dir"
 ```
 `scan.py` takes 2 arguments:
 1. Path to the image file
@@ -62,12 +62,12 @@ $ python3 scan.py "path/to/image.zip" "android-api-level"
 
 To only extract the image run:
 ```shell
-$ python3 scan.py "path/to/image.zip" "android-api-level" --extract
+$ python3 scan.py "path/to/image.zip" "path/to/extraction/dir" --extract
 ```
 
 To only run analysis on the extracted image run:
 ```shell
-$ python3 scan.py "path/to/image.zip" "android-api-level" --scan
+$ python3 scan.py "path/to/image.zip" "path/to/extraction/dir" --scan
 ```
 
 ___
