@@ -348,6 +348,15 @@ def parse_number(string):
   return int(string, 0)
 
 
+priority = ["null", "vivotest"]
+def priority_key(path):
+    path = path.lower()
+    for i, p in enumerate(priority):
+        if p in path:
+            return i
+    return len(priority)
+
+
 def find_partition_file(image_dir, partition_name, image_ext):
     """Find the filename and extension of a specific partition.
 
@@ -359,12 +368,24 @@ def find_partition_file(image_dir, partition_name, image_ext):
     Returns:
       the path of the searched partition file
     """
+    if image_dir == "":
+        image_dir = "."
     image_filename = os.path.join(image_dir, partition_name + image_ext)
     if not os.path.exists(image_filename):
-      for file in os.listdir(image_dir):
-        file_path = os.path.join(image_dir, file)
-        if os.path.isfile(file_path) and os.path.splitext(file.lower())[0] == partition_name:
-          return file_path
+      potential_files = []
+      for root, dirs, files in os.walk(image_dir):
+        for file in files:
+          file_path = os.path.join(root, file)
+          splt_file = os.path.splitext(file.lower())
+          if splt_file[0].lower() == partition_name and len(splt_file) > 1 and splt_file[1].lower() == image_ext:
+            return file_path
+          if file.lower().startswith(partition_name) and len(splt_file) > 1 and splt_file[1] == image_ext:
+            potential_files.append(file_path)
+      filtered_potential_files = sorted(potential_files, key=priority_key)
+      if filtered_potential_files:
+        print(filtered_potential_files)
+        rel_target = os.path.relpath(filtered_potential_files[0], os.path.dirname(image_filename))
+        os.symlink(rel_target, image_filename)
     return image_filename
 
 
@@ -673,6 +694,14 @@ def verify_vbmeta_signature(vbmeta_header, vbmeta_blob):
       if pout != padding_and_digest:
         sys.stderr.write('Signature not correct\n')
         return False
+      # p = subprocess.Popen(
+      #     ['openssl', 'rsa', '-inform', 'DER', '-in', der_tmpfile.name,
+      #      '-text', '-pubin'],
+      #     stdin=subprocess.PIPE,
+      #     stdout=subprocess.PIPE,
+      #     stderr=subprocess.PIPE)
+      # (pout, perr) = p.communicate(sig_blob)
+      # p.wait()
   return True
 
 
