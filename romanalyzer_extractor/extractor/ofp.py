@@ -21,7 +21,7 @@ class OfpExtractor(Extractor):
         try:
             execute(extract_cmd)
         except Exception:
-            pass
+            self.log.info("\tfailed to extract ofp file using Qualcomm extractor.")
 
         if len(os.listdir(self.extracted)) == 0:
             extract_cmd = 'python3 {} "{}" "{}"'.format(self.tool_mtk, abspath, self.extracted)

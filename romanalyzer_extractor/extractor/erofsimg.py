@@ -18,10 +18,9 @@ class ErofsImgExtractor(Extractor):
         # erofsUnpackKt_x64 can not handle paths correctly using "", so relative paths are used.
         cwd = os.getcwd()
         os.chdir(abspath.parent)
-        self.log.debug(f"\t{abspath.parent}, cwd: {cwd}, {self.extracted}, {abspath.name}, {self.extracted.name}")
 
         extract_cmd = '{} "{}" "{}"'.format(self.tool, abspath.name, self.extracted.name)
-        execute(extract_cmd, suppress_output=False)
+        execute(extract_cmd, suppress_output=True)
 
         os.chdir(cwd)
 
