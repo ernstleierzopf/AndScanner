@@ -18,14 +18,12 @@ class OfpExtractor(Extractor):
         abspath = self.target.absolute()
         
         extract_cmd = 'python3 {} "{}" "{}"'.format(self.tool, abspath, self.extracted)
-        try:
-            execute(extract_cmd)
-        except Exception:
-            self.log.info("\tfailed to extract ofp file using Qualcomm extractor.")
+        execute(extract_cmd, suppress_output=True)
 
-        if len(os.listdir(self.extracted)) == 0:
+        if not self.extracted.exists() or len(os.listdir(self.extracted)) == 0:
+            self.log.warn("\tfailed to extract ofp file using Qualcomm extractor.")
             extract_cmd = 'python3 {} "{}" "{}"'.format(self.tool_mtk, abspath, self.extracted)
-            execute(extract_cmd)
+            execute(extract_cmd, suppress_output=True)
 
         if not self.extracted.exists() or len(os.listdir(self.extracted)) == 0:
             self.log.warn("\tfailed to extract {}".format(self.target))
