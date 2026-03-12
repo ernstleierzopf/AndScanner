@@ -1,4 +1,21 @@
-# extract_android_ota_payload.py
+# Use payload-dumper-go
+
+This tool can be updated using following code:
+
+```
+rm payload-dumper-go
+git clone https://github.com/google/payload-dumper-go.git
+cd payload-dumper-go
+go build
+mv payload-dumper-go /tmp
+cd ..
+sudo rm -r payload-dumper-go
+mv /tmp/payload-dumper-go ./
+```
+
+
+
+# extract_android_ota_payload.py (Deprecated)
 
 Extract Android firmware images from an OTA payload.bin file.
 
