@@ -15,9 +15,14 @@ class ErofsImgExtractor(Extractor):
         self.log.debug("\tstart extract erofs file.")
 
         abspath = self.target.absolute()
+        # erofsUnpackKt_x64 can not handle paths correctly using "", so relative paths are used.
+        cwd = os.getcwd()
+        os.chdir(abspath.parent)
 
-        extract_cmd = '{} "{}" "{}"'.format(self.tool, abspath, self.extracted)
+        extract_cmd = '{} "{}" "{}"'.format(self.tool, abspath.name, self.extracted.name)
         execute(extract_cmd, suppress_output=True)
+
+        os.chdir(cwd)
 
         if not self.extracted.exists() or len(os.listdir(self.extracted)) == 0:
             self.log.warn("\tfailed to extract {}".format(self.target))
