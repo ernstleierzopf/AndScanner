@@ -94,7 +94,8 @@ def classify(target):
         return "sonyimg"
 
     # archive file
-    if target.suffix in ARCHIVE_EXT or file_mime_type == 'application/zip' or file_mime_type == 'application/x-tar':
+    if target.suffix in ARCHIVE_EXT or file_mime_type in ('application/zip', 'application/x-tar', 'application/x-lz4', 'application/gzip') or \
+            (target.name == 'kernel' and file_mime_type == 'application/octet-stream' and file_type == 'data'):
         return "archive"
 
     # special types.
