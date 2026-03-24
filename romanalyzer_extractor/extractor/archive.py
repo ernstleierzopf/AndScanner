@@ -27,8 +27,8 @@ class ArchiveExtractor(Extractor):
                 suffix = '.lz4'
             elif mime == 'application/gzip':
                 suffix = '.gz'
-                new_path = f'{self.target}.extracted{suffix}'
-                self.extracted = f'{self.target}.extracted'
+                new_path = Path(f'{abspath}.extracted{suffix}')
+                self.extracted = Path(f'{self.target}.extracted')
                 shutil.copy(abspath, new_path)
                 abspath = new_path
             elif mime == 'application/octet-stream' and self.target.name == "kernel":
@@ -55,8 +55,8 @@ class ArchiveExtractor(Extractor):
                             _decimal = int(data[0])
                             hex_offset = data[1]
                             _description = " ".join(data[2:])
-                            abspath = f'{self.target}.extracted{suffix}'
-                            self.extracted = f'{self.target}.extracted'
+                            abspath = Path(f'{self.target}.extracted{suffix}')
+                            self.extracted = Path(f'{self.target}.extracted')
                             cmd = 'dd if="{}" bs=1 skip=$(({})) of="{}"'.format(self.target, hex_offset, abspath)
                             execute(cmd, suppress_output=True)
                             break
