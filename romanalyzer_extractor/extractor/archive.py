@@ -31,6 +31,7 @@ class ArchiveExtractor(Extractor):
                 self.extracted = Path(f'{self.target}.extracted')
                 shutil.copy(abspath, new_path)
                 abspath = new_path
+                self.target = abspath
             elif mime == 'application/octet-stream' and self.target.name == "kernel":
                 cmd = 'binwalk "{}" '.format(self.target)
                 output = execute(cmd, suppress_output=True)
@@ -56,6 +57,7 @@ class ArchiveExtractor(Extractor):
                             hex_offset = data[1]
                             _description = " ".join(data[2:])
                             abspath = Path(f'{self.target}.extracted{suffix}')
+                            self.target = abspath
                             self.extracted = Path(f'{self.target}.extracted')
                             cmd = 'dd if="{}" bs=1 skip=$(({})) of="{}"'.format(self.target, hex_offset, abspath)
                             execute(cmd, suppress_output=True)
