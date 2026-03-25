@@ -182,13 +182,13 @@ def execute(cmd, showlog=True, suppress_output=False, return_exit_code=False, re
             stderr = subprocess.DEVNULL
         if redirect_stderr_stdout:
             stderr = subprocess.STDOUT
-        result = subprocess.run(cmd, shell=True, encoding='utf-8', text=True, stdout=subprocess.PIPE, stderr=stderr, timeout=1200)
+        result = subprocess.run(cmd, shell=True, encoding='utf-8', errors="ignore", text=True, stdout=subprocess.PIPE, stderr=stderr, timeout=1200)
         output = result.stdout
         exit_code = result.returncode
         result.check_returncode()
         if showlog: log.debug(u"Success execute: {}".format(cmd))
     except Exception as e:
-        exit_code = e.returncode
+        exit_code = e.getattr("returncode", None)
         if not suppress_output:
             log.debug(''.join(traceback.format_tb(e.__traceback__)))
     if return_exit_code:
