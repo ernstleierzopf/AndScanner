@@ -383,7 +383,6 @@ def find_partition_file(image_dir, partition_name, image_ext):
             potential_files.append(file_path)
       filtered_potential_files = sorted(potential_files, key=priority_key)
       if filtered_potential_files:
-        print(filtered_potential_files)
         rel_target = os.path.relpath(filtered_potential_files[0], os.path.dirname(image_filename))
         os.symlink(rel_target, image_filename)
     return image_filename
