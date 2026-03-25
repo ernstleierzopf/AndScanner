@@ -188,7 +188,7 @@ def execute(cmd, showlog=True, suppress_output=False, return_exit_code=False, re
         result.check_returncode()
         if showlog: log.debug(u"Success execute: {}".format(cmd))
     except Exception as e:
-        exit_code = e.getattr("returncode", None)
+        exit_code = getattr(e, "returncode", None)
         if not suppress_output:
             log.debug(''.join(traceback.format_tb(e.__traceback__)))
     if return_exit_code:
