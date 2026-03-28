@@ -95,7 +95,7 @@ class ROMExtractor(Extractor):
                 continue
             guess = classify(process_item)
             
-            self.log.debug("\t 000000 {}  {}".format(process_item, guess))
+            self.log.debug("\t 000000 {}  {}".format(str(process_item).encode("utf-8", "replace").decode("utf-8"), guess))
             
             if guess not in self.extractor_map.keys():
                 continue
