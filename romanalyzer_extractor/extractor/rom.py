@@ -109,8 +109,8 @@ class ROMExtractor(Extractor):
                     is_base_file = False
                 self.enqueue(extractor.extract())
             except Exception as e:
-                self.log.exception("failed to extract {} ... skip it.".format(process_item))
-                self.log.exception(e)
+                self.log.error("failed to extract {} ... skip it.".format(process_item))
+                self.log.error(e)
         if self.vbmeta_img is not None:
             self.prepare_vbmeta()
             self.rename_missing_vbmeta_files()

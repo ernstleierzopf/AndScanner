@@ -34,9 +34,9 @@ class BootImgExtractor(Extractor):
             try:
                 execute(extract_cmd2)
             except Exception:
-                self.log.exception(f"failed to extract {boot_img}")
-                self.log.exception(first_tb)
-                self.log.exception(traceback.format_exc())
+                self.log.error(f"failed to extract {boot_img}")
+                self.log.error(first_tb)
+                self.log.error(traceback.format_exc())
 
         if not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))

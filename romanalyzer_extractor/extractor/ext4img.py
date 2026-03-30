@@ -29,13 +29,13 @@ class Ext4ImgExtractor(Extractor):
                 self.log.debug(e)
         except subprocess.CalledProcessError as e:
             self.log.error(f"Could not mount {self.target} to {mount_point}. Skipping {self.target}..")
-            self.log.exception(e)
+            self.log.error(e)
         try:
             subprocess.check_call(umount_cmd, shell=True, encoding='utf-8')
             shutil.rmtree(mount_point)
         except subprocess.CalledProcessError as e:
             self.log.error(f"Could not umount {mount_point}.")
-            self.log.exception(e)
+            self.log.error(e)
 
         if self.extracted is None or not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))
