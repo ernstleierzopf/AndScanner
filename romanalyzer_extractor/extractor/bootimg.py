@@ -27,16 +27,13 @@ class BootImgExtractor(Extractor):
         extract_cmd2 = f"cd \"{workdir}\" && {self.tool2} --boot_img \"{boot_img}\" --out \"{self.extracted}\""
 
         # Perform extraction.
-        try:
-            execute(extract_cmd)
-        except Exception:
-            first_tb = traceback.format_exc()
-            try:
-                execute(extract_cmd2)
-            except Exception:
-                self.log.error(f"failed to extract {boot_img}")
-                self.log.error(first_tb)
-                self.log.error(traceback.format_exc())
+        output, exit_code = execute(extract_cmd, return_exit_code=True, redirect_stderr_stdout=True)
+        if exit_code != 0:
+            output2, exit_code = execute(extract_cmd2, return_exit_code=True, redirect_stderr_stdout=True)
+            if exit_code != 0:
+                self.log.error(f"failed to extract {boot_img}.")
+                self.log.error(output)
+                self.log.error(output2)
 
         if not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))
