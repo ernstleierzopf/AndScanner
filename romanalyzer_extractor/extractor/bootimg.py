@@ -1,3 +1,4 @@
+import traceback
 from pathlib import Path
 from romanalyzer_extractor.utils import execute
 from romanalyzer_extractor.extractor.base import Extractor
@@ -7,6 +8,7 @@ class BootImgExtractor(Extractor):
     def __init__(self, target, target_path=None):
         super().__init__(target, target_path)
         self.tool = Path("romanalyzer_extractor/tools/bootimg_extraction/unpack_bootimg.py").absolute()
+        self.tool2 = Path("romanalyzer_extractor/tools/bootimg_extraction/unpack_bootimg_old.py").absolute()
 
     def extract(self):
         if not self.chmod():
@@ -22,9 +24,19 @@ class BootImgExtractor(Extractor):
 
         # Build extraction command.
         extract_cmd = f"cd \"{workdir}\" && {self.tool} --boot_img \"{boot_img}\" --out \"{self.extracted}\""
+        extract_cmd2 = f"cd \"{workdir}\" && {self.tool2} --boot_img \"{boot_img}\" --out \"{self.extracted}\""
 
         # Perform extraction.
-        execute(extract_cmd)
+        try:
+            execute(extract_cmd)
+        except Exception:
+            first_tb = traceback.format_exc()
+            try:
+                execute(extract_cmd2)
+            except Exception:
+                self.log.exception(f"failed to extract {boot_img}")
+                self.log.exception(first_tb)
+                self.log.exception(traceback.format_exc())
 
         if not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))

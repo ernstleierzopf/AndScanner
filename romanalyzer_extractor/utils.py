@@ -132,7 +132,8 @@ LOGCFG = {
         },
         'extractor': {
             'level': 'DEBUG',
-            'handlers': ['extractorlog']
+            'handlers': ['extractorlog'],
+            'propagate': False
         }
     }
 }
