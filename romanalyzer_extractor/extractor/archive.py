@@ -57,9 +57,9 @@ class ArchiveExtractor(Extractor):
                             hex_offset = data[1]
                             _description = " ".join(data[2:])
                             abspath = Path(f'{self.target}.extracted{suffix}')
-                            self.target = abspath
                             self.extracted = Path(f'{self.target}.extracted')
                             cmd = 'dd if="{}" bs=1 skip=$(({})) of="{}"'.format(self.target, hex_offset, abspath)
+                            self.target = abspath
                             execute(cmd, suppress_output=True)
                             break
             self.log.info(f'\tfound suffix {suffix} for {abspath}.')
