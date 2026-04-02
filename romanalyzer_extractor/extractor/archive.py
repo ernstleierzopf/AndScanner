@@ -13,7 +13,7 @@ class ArchiveExtractor(Extractor):
         self.log.debug("Archive extract target: {}".format(self.target))
         self.log.debug("\tstart extract archive.")
 
-        extract_cmd = '' 
+        extract_cmd = ''
         suffix = self.target.suffix
         abspath = self.target.absolute()
 
@@ -50,8 +50,11 @@ class ArchiveExtractor(Extractor):
                             return None
                         firstline = False
                     else:
-                        if "gzip compressed data" in line:
-                            suffix = ".gz"
+                        if "gzip compressed data" in line or "LZMA compressed data" in line:
+                            if "gzip compressed data" in line:
+                                suffix = ".gz"
+                            else:
+                                suffix = ".lzma"
                             data = line.split()
                             _decimal = int(data[0])
                             hex_offset = data[1]
@@ -70,11 +73,11 @@ class ArchiveExtractor(Extractor):
         elif suffix == '.gz':
             extract_cmd = 'gunzip -f -d "{}"'.format(abspath)
             self.extracted = self.target.with_suffix('')
-        #elif suffix == '.zip':
-        #    extract_cmd = 'unzip -P x -o "{}" -d "{}"'.format(abspath, self.extracted)
+        # elif suffix == '.zip':
+        #     extract_cmd = 'unzip -P x -o "{}" -d "{}"'.format(abspath, self.extracted)
         elif suffix == '.rar':
             extract_cmd = 'unrar -px  x "{}" "{}/" -y'.format(abspath, self.extracted)
-        elif suffix in ('.7z', '.zip', '.ext4', '.rar', '.ftf'):
+        elif suffix in ('.7z', '.zip', '.ext4', '.rar', '.ftf', '.lzma'):
             extract_cmd = '7z -pfotatest1234 x "{}" -o"{}" -y'.format(abspath, self.extracted)
         elif suffix == ".raw":
             extract_cmd = '7z -p x "{}" -o"{}" -y'.format(abspath, self.extracted)
@@ -93,11 +96,13 @@ class ArchiveExtractor(Extractor):
             extract_cmd = 'lz4 -f -d "{}" "{}"'.format(abspath, self.extracted)
         else:
             return None
-        
-        execute(extract_cmd)
 
-        if not self.extracted.exists(): 
+        output, exit_code = execute(extract_cmd, return_exit_code=True, redirect_stderr_stdout=True)
+
+        if not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))
+            if not exit_code:
+                self.log.error(output)
             return None
         else:
             self.log.debug("\textracted path: {}".format(self.extracted))

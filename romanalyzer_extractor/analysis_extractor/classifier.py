@@ -4,7 +4,7 @@ from pathlib import Path
 from romanalyzer_extractor.utils import log
 
 EXT_EXT = ('ext2', 'ext3', 'ext4')
-ARCHIVE_EXT = ('.gz', '.tgz', '.bz2', '.xz', '.tar', '.zip', '.rar', '.7z', '.md5', '.APP', '.lz4', '.ftf')
+ARCHIVE_EXT = ('.gz', '.tgz', '.bz2', '.xz', '.tar', '.zip', '.rar', '.7z', '.md5', '.APP', '.lz4', '.ftf', '.lzma')
 INTERESTING_EXT = ('.ko', '.so', '.dex', '.odex', '.apk', '.jar', '.ozip', '.apex', '.vdex')
 
 
@@ -94,8 +94,8 @@ def classify(target):
         return "sonyimg"
 
     # archive file
-    if target.suffix in ARCHIVE_EXT or file_mime_type in ('application/zip', 'application/x-tar', 'application/x-lz4', 'application/gzip') or \
-            (target.name == 'kernel' and file_mime_type == 'application/octet-stream' and file_type == 'data'):
+    if target.suffix in ARCHIVE_EXT or file_mime_type in ('application/zip', 'application/x-tar', 'application/x-lz4', 'application/gzip', 'application/x-lzma') or \
+            (target.name == 'kernel' and file_mime_type == 'application/octet-stream' and file_type in ('data', 'Linux kernel ARM boot executable zImage (little-endian)')):
         return "archive"
 
     # special types.
