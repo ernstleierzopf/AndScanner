@@ -74,12 +74,11 @@ class ROMExtractor(Extractor):
             elif abspath.name.lower() in ("boot.img", "recovery.img", "system.img", "dtbo.img", "vendor.img", "vbmeta_system.img",
                                           "vbmeta_vendor.img"):
                 self.partition_paths.append(abspath)
-            elif abspath.name.lower() == "vbmeta.img":
-                self.vbmeta_img = abspath
-            elif abspath.name.lower() == "vbmeta-sign.img":
-                self.vbmeta_img = abspath
-            elif abspath.name.lower() == "vbmeta.bin":
-                self.vbmeta_img = abspath
+            elif abspath.name.lower() in ("vbmeta.img", "vbmeta-sign.img", "vbmeta.bin"):
+                if self.vbmeta_img and len(str(self.vbmeta_img)) < len(str(abspath)):
+                    self.log.info(f"Another vbmeta image with a shorter path already exists, so {abspath} is skipped.")
+                else:
+                    self.vbmeta_img = abspath
         self.process_queue.extend(target)
 
     def extract(self):
