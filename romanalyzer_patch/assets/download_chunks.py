@@ -3,7 +3,7 @@ import os
 import urllib.request
 import shutil
 from selenium.webdriver.chrome.options import Options
-from firmware_images.scrapers.WebscraperInterface import Webscraper, TMPDIR, DOWNLOAD_DIR
+#from firmware_images.scrapers.WebscraperInterface import Webscraper, TMPDIR, DOWNLOAD_DIR
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -13,6 +13,8 @@ from bs4 import BeautifulSoup
 
 base_url = "https://snoopsnitch-api.srlabs.de/chunks/"
 url = base_url + "?C=M;O=A"
+TMPDIR = "/tmp/"
+DOWNLOAD_DIR = "/tmp/patch"
 
 
 def scrape(self):
@@ -75,7 +77,7 @@ def download(self, link, cache_dir, file, size):
     if os.path.exists(destfile):
         self.error_logger.info(f"File {destfile} already exists. skipping..")
     else:
-        urllib.request.urlretrieve(link, tmpfile, Webscraper.show_progress)
+        urllib.request.urlretrieve(link, tmpfile)#, Webscraper.show_progress)
         shutil.move(tmpfile, destfile)
 
 
@@ -135,9 +137,9 @@ test_api_levels = {}
 basic_tests_urls = []
 
 for file in [x for x in files]:
-    print(file)
     found_url = os.path.join(base_url, file)
     chunks_file_path = os.path.join("chunks", file)
+    print(file, os.path.exists(chunks_file_path))
     if not os.path.exists(chunks_file_path):
         urllib.request.urlretrieve(base_url + file, chunks_file_path)
     with open(chunks_file_path, "r") as f:
