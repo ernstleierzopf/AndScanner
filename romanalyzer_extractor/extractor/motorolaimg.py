@@ -34,7 +34,7 @@ class MotorolaImgExtractor(Extractor):
             self.log.error(f"dd extraction failed for {self.target}")
             self.log.error(e)
             return None
-        mount_cmd = 'mount -t ext4 -o ro "{img}" "{mount_point}"'.format(img=ext_path, mount_point=mount_point)
+        mount_cmd = 'mount -o loop,ro "{img}" "{mount_point}"'.format(img=ext_path, mount_point=mount_point)
         umount_cmd = 'umount "{mount_point}"'.format(mount_point=mount_point)
         if os.getuid() != 0:  # non-root user
             self.log.debug("\tpython script not running as root. Adding sudo to mount command.")
