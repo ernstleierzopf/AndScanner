@@ -29,6 +29,8 @@ class SonyImgExtractor(Extractor):
                 self.extracted = self.target.parents[0] / line.replace("Processing " + str(outpath) + "/", "")
             if " created." in line:
                 self.extracted = self.target.parents[0] / line.replace(" created.", "").replace(str(outpath) + "/", "")
+            if " succeeded." in line:
+                self.extracted = self.target.parents[0] / line.replace(" succeeded.", "").replace("Renaming to " + str(outpath) + "/", "")
 
         for file in os.listdir(outpath):
             path = os.path.join(outpath, file)
