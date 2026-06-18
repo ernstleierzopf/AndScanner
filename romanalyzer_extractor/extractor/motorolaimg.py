@@ -28,7 +28,7 @@ class MotorolaImgExtractor(Extractor):
             self.log.error(e)
             return None
         try:
-            dd_cmd = ["dd", f"if={abspath}", f"of={ext_path}", "bs=1", f"skip={offset}", "status=none"]
+            dd_cmd = ["dd", f"if={abspath}", f"of={ext_path}", f"bs={offset}", "skip=1", "status=none"]
             subprocess.check_call(dd_cmd)
         except subprocess.CalledProcessError as e:
             self.log.error(f"dd extraction failed for {self.target}")
