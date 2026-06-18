@@ -1,0 +1,74 @@
+import subprocess
+import shutil
+import os
+import re
+from romanalyzer_extractor.extractor.base import Extractor
+
+
+class MotorolaImgExtractor(Extractor):
+    def extract(self):
+        if not self.chmod(): return None
+        abspath = self.target.absolute()
+        ext_path = str(abspath) + ".ext4"
+        mount_point = f"{abspath}.mounted"
+        # --- BINWALK: get first ext filesystem offset ---
+        try:
+            binwalk_out = subprocess.check_output(["binwalk", str(abspath)] ,text=True)
+            offset = None
+            for line in binwalk_out.splitlines():
+                if "Linux EXT filesystem" in line:
+                    # first column = decimal offset
+                    offset = int(line.split()[0])
+                    break
+            if offset is None:
+                self.log.error(f"No ext filesystem found via binwalk for {self.target}")
+                return None
+        except subprocess.CalledProcessError as e:
+            self.log.error(f"binwalk failed on {self.target}")
+            self.log.error(e)
+            return None
+        try:
+            dd_cmd = ["dd", f"if={abspath}", f"of={ext_path}", "bs=1", f"skip={offset}", "status=none"]
+            subprocess.check_call(dd_cmd)
+        except subprocess.CalledProcessError as e:
+            self.log.error(f"dd extraction failed for {self.target}")
+            self.log.error(e)
+            return None
+        mount_cmd = 'mount -t ext4 -o ro "{img}" "{mount_point}"'.format(img=ext_path, mount_point=mount_point)
+        umount_cmd = 'umount "{mount_point}"'.format(mount_point=mount_point)
+        if os.getuid() != 0:  # non-root user
+            self.log.debug("\tpython script not running as root. Adding sudo to mount command.")
+            mount_cmd = "sudo " + mount_cmd
+            umount_cmd = "sudo " + umount_cmd
+        try:
+            if not os.path.exists(mount_point):
+                os.mkdir(mount_point)
+            subprocess.check_call(mount_cmd, shell=True, encoding='utf-8')
+            try:
+                shutil.copytree(mount_point, self.extracted, dirs_exist_ok=True, symlinks=True)
+            except shutil.Error as e:
+                self.log.debug(f"Encountered errors when copying files from {mount_point}")
+                self.log.debug(e)
+            if abspath.exists():
+                abspath.unlink()
+        except subprocess.CalledProcessError as e:
+            self.log.error(f"Could not mount {ext_path} to {mount_point}. Skipping {self.target}..")
+            self.log.error(e)
+        try:
+            subprocess.check_call(umount_cmd, shell=True, encoding='utf-8')
+            shutil.rmtree(mount_point)
+        except subprocess.CalledProcessError as e:
+            self.log.error(f"Could not umount {mount_point}.")
+            self.log.error(e)
+        # cleanup extracted ext image
+        try:
+            if os.path.exists(ext_path):
+                os.unlink(ext_path)
+        except Exception as e:
+            self.log.debug(f"Could not remove temp ext file {ext_path}: {e}")
+        if self.extracted is None or not self.extracted.exists():
+            self.log.warn("\tfailed to extract {}".format(self.target))
+            return None
+        else:
+            self.log.debug("\textracted path: {}".format(self.extracted))
+            return self.extracted

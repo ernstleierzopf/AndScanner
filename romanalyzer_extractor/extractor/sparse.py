@@ -11,9 +11,6 @@ from romanalyzer_extractor.extractor.ext4img import Ext4ImgExtractor
 from romanalyzer_extractor.analysis_extractor.classifier import classify, get_file_type
 
 
-# known (partially) not working extraction:
-# - Realme RMX3521export_11_C.15_2023071017400126.zip
-# - Oppo Oppo_Find_X3_Pro_PEEM00_Domestic_11_F.18_230116_QPST.zip https://oppostockrom.com/
 class SparseImgExtractor(Extractor):
     def __init__(self, target, target_path=None):
         super().__init__(target, target_path)
@@ -129,6 +126,8 @@ class SparseImgExtractor(Extractor):
         elif file_class == "extimg":
             extractor = ExtImgExtractor(raw_img)
         elif file_class == "ext4img":
+            extractor = Ext4ImgExtractor(raw_img)
+        elif file_class == "motorolaimg":
             extractor = Ext4ImgExtractor(raw_img)
         if extractor is not None:
             self.extracted = extractor.extract()

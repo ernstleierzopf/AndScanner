@@ -103,6 +103,11 @@ def classify(target):
         if target.name == 'payload.bin':
             return 'otapayload'
 
+        with open(target, "rb") as f:
+            header = f.read(64)
+        if target.suffix in ('.img', '.raw') and (header.startswith(b"MOTO") or b"MOT_PIV" in header):
+            return 'motorolaimg'
+
         if target.suffix in ('.img', '.raw'):  # just try extracting as EROFS fs - better than doing nothing.  # and 'UPDATE.APP' in str(target):
             return 'erofsimg'
 
