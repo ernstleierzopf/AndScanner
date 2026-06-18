@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from romanalyzer_extractor.extractor.motorolaimg import MotorolaImgExtractor
 from romanalyzer_extractor.utils import execute
 from romanalyzer_extractor.extractor.base import Extractor
 from romanalyzer_extractor.extractor.archive import ArchiveExtractor
@@ -128,7 +129,7 @@ class SparseImgExtractor(Extractor):
         elif file_class == "ext4img":
             extractor = Ext4ImgExtractor(raw_img)
         elif file_class == "motorolaimg":
-            extractor = Ext4ImgExtractor(raw_img)
+            extractor = MotorolaImgExtractor(raw_img)
         if extractor is not None:
             self.extracted = extractor.extract()
 
