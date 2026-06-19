@@ -39,4 +39,6 @@ class Ext4ImgExtractor(Extractor):
             return None
         else:
             self.log.debug("\textracted path: {}".format(self.extracted))
+            if self.target.endswith(".ext4"):
+                abspath.unlink()
             return self.extracted

@@ -19,8 +19,11 @@ class SonyImgExtractor(Extractor):
         if not os.path.exists(outpath):
             os.mkdir(outpath)
         abspath = self.target.absolute()
-        extract_cmd = ' "{}" "{}" "{}"'.format(self.tool, outpath, abspath)
+        tmppath = os.path.join("/tmp", self.target.name)
+        extract_cmd = ' "{}" "{}" "{}"'.format(self.tool, outpath, tmppath)
+        shutil.move(abspath, tmppath)
         output = execute(extract_cmd, suppress_output=True)
+        shutil.move(tmppath, abspath)
         data = output.split("\n")
         for line in data:
             if "Extracting file" in line:
@@ -30,7 +33,7 @@ class SonyImgExtractor(Extractor):
             if " created." in line:
                 self.extracted = self.target.parents[0] / line.replace(" created.", "").replace(str(outpath) + "/", "")
             if " succeed." in line:
-                self.extracted = self.target.parents[0] / line.replace(" succeed.", "").replace("Renaming to ", "")
+                self.extracted = self.target.parents[0] / line.replace(" succeed.", "").replace("Renaming to ", "").replace(str(outpath) + "/", "")
         for file in os.listdir(outpath):
             path = os.path.join(outpath, file)
             if "." in file and file.rsplit(".", 1)[1].isnumeric():
