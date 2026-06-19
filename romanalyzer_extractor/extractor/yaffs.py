@@ -19,7 +19,6 @@ class YaffsImgExtractor(Extractor):
         except subprocess.CalledProcessError as e:
             self.log.error(f"Could not extract {self.target} to {self.extracted}. Skipping {self.target}..")
             self.log.error(e)
-        shutil.rmtree(mount_point)
 
         if self.extracted is None or not self.extracted.exists():
             self.log.warn("\tfailed to extract {}".format(self.target))
