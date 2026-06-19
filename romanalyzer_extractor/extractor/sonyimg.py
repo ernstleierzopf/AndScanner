@@ -15,6 +15,10 @@ class SonyImgExtractor(Extractor):
         self.log.debug("Sin extract target: {}".format(self.target))
         self.log.debug("\tstart extract sin file.")
 
+        if self.target.name == "userdata.sin":
+            self.log.debug("\tSkipping userdata.sin extraction.")
+            return None
+
         outpath = "/tmp/out"
         if not os.path.exists(outpath):
             os.mkdir(outpath)
