@@ -8,12 +8,12 @@ class YaffsImgExtractor(Extractor):
     def extract(self):
         if not self.chmod(): return None
         abspath = self.target.absolute()
+        if self.target.name.endswith(".unknown") and self.extracted.name.endswith(".unknown.extracted"):
+            self.extracted = self.extracted.with_name(self.extracted.name.replace(".unknown.extracted", ""))
         cmd = f'unyaffs "{abspath}" "{self.extracted}"'
         if os.getuid() != 0:  # non-root user
             self.log.debug("\tpython script not running as root. Adding sudo to mount command.")
             cmd = "sudo " + cmd
-        if self.target.name.endswith(".unknown") and self.extracted.name.endswith(".unknown.extracted"):
-            self.extracted = self.extracted.with_name(self.extracted.name.replace(".unknown.extracted", ""))
         try:
             if not os.path.exists(self.extracted):
                 os.mkdir(self.extracted)
