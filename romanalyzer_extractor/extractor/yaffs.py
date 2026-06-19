@@ -13,7 +13,7 @@ class YaffsImgExtractor(Extractor):
             self.log.debug("\tpython script not running as root. Adding sudo to mount command.")
             cmd = "sudo " + cmd
         if self.target.name.endswith(".unknown") and self.extracted.name.endswith(".unknown.extracted"):
-            self.extracted.name = self.extracted.name.replace(".unknown.extracted", "")
+            self.extracted = self.extracted.with_name(self.extracted.name.replace(".unknown.extracted", ""))
         try:
             if not os.path.exists(self.extracted):
                 os.mkdir(self.extracted)
