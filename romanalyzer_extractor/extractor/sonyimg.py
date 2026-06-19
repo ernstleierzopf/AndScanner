@@ -15,7 +15,7 @@ class SonyImgExtractor(Extractor):
         self.log.debug("Sin extract target: {}".format(self.target))
         self.log.debug("\tstart extract sin file.")
 
-        outpath = self.target.parents[0] / "out"
+        outpath = "/tmp/out"
         if not os.path.exists(outpath):
             os.mkdir(outpath)
         abspath = self.target.absolute()
@@ -26,12 +26,11 @@ class SonyImgExtractor(Extractor):
             if "Extracting file" in line:
                 self.extracted = self.target.parents[0] / line.replace("Extracting file " + str(outpath) + "/", "")
             if "Processing " in line:
-                self.extracted = self.target.parents[0] / line.replace("Processing " + str(outpath) + "/", "")
+                self.extracted = self.target.parents[0] / line.replace("Proccessing " + str(outpath) + "/", "").replace("...", "")
             if " created." in line:
                 self.extracted = self.target.parents[0] / line.replace(" created.", "").replace(str(outpath) + "/", "")
-            if " succeeded." in line:
-                self.extracted = self.target.parents[0] / line.replace(" succeeded.", "").replace("Renaming to " + str(outpath) + "/", "")
-
+            if " succeed." in line:
+                self.extracted = self.target.parents[0] / line.replace(" succeed.", "").replace("Renaming to ", "")
         for file in os.listdir(outpath):
             path = os.path.join(outpath, file)
             if "." in file and file.rsplit(".", 1)[1].isnumeric():
@@ -45,7 +44,7 @@ class SonyImgExtractor(Extractor):
         shutil.rmtree(outpath, ignore_errors=False)
 
         if not self.extracted.exists():
-            self.log.warn("\tfailed to extract {}".format(self.target))
+            self.log.warn("\tfailed to extract {}, {}".format(self.target, self.extracted))
             return None
         else:
             self.log.debug("\textracted path: {}".format(self.extracted))

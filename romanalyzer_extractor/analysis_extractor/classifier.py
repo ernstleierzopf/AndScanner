@@ -93,6 +93,9 @@ def classify(target):
     if target.suffix == ".sin":
         return "sonyimg"
 
+    if "YAFFS" in file_type:
+        return "yaffs"
+
     # archive file
     if target.suffix in ARCHIVE_EXT or file_mime_type in ('application/zip', 'application/x-tar', 'application/x-lz4', 'application/gzip', 'application/x-lzma') or \
             (target.name == 'kernel' and file_mime_type == 'application/octet-stream' and file_type in ('data', 'Linux kernel ARM boot executable zImage (little-endian)')):

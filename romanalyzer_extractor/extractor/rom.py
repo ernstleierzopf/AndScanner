@@ -23,6 +23,7 @@ from romanalyzer_extractor.extractor.erofsimg import ErofsImgExtractor
 from romanalyzer_extractor.extractor.metadata import MetadataExtractor
 from romanalyzer_extractor.extractor.sonyimg import SonyImgExtractor
 from romanalyzer_extractor.extractor.motorolaimg import MotorolaImgExtractor
+from romanalyzer_extractor.extractor.yaffs import YaffsImgExtractor
 
 
 class ROMExtractor(Extractor):
@@ -54,6 +55,7 @@ class ROMExtractor(Extractor):
             'erofsimg': ErofsImgExtractor,
             'sonyimg': SonyImgExtractor,
             'motorolaimg': MotorolaImgExtractor,
+            'yaffs': YaffsImgExtractor,
             'elf': MetadataExtractor, 'ko': MetadataExtractor, 'so': MetadataExtractor, 'dex': MetadataExtractor, 'odex': MetadataExtractor,
             'apk': MetadataExtractor, 'jar': MetadataExtractor, 'apex': MetadataExtractor, 'vdex': MetadataExtractor
         }
