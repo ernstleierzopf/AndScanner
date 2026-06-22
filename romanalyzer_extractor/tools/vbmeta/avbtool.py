@@ -1778,12 +1778,21 @@ class AvbHashDescriptor(AvbDescriptor):
     digest = ha.digest()
     # The digest must match unless there is no digest in the descriptor.
     if self.digest and digest != self.digest:
-      sys.stderr.write('{} digest of {} does not match digest in descriptor\n'.
-                       format(self.hash_algorithm, image_filename))
-      return False
-    print('{}: Successfully verified {} hash of {} for image of {} bytes'
-          .format(self.partition_name, self.hash_algorithm, image.filename,
-                  self.image_size))
+      res = False
+      if not self.partition_name.endswith('-verified'):
+        part_name = self.partition_name
+        self.partition_name = self.partition_name + "-verified"
+        res = self.verify(image_dir, image_ext, expected_chain_partitions_map, image_containing_descriptor, accept_zeroed_hashtree,
+                          allow_missing_partitions)
+        self.partition_name = part_name
+      if not res:
+          sys.stderr.write('{} digest of {} does not match digest in descriptor\n'.
+                           format(self.hash_algorithm, image_filename))
+          return False
+    if self.digest and digest == self.digest:
+        print('{}: Successfully verified {} hash of {} for image of {} bytes'
+              .format(self.partition_name, self.hash_algorithm, image.filename,
+                      self.image_size))
     return True
 
 
