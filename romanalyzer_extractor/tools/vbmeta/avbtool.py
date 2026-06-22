@@ -1590,7 +1590,10 @@ class AvbHashtreeDescriptor(AvbDescriptor):
       image_filename = image_containing_descriptor.filename
       image = image_containing_descriptor
     else:
-      image_filename = find_partition_file(image_dir, self.partition_name, image_ext)
+      if os.path.exists(os.path.join(image_dir, self.partition_name + ".img")):
+        image_filename = find_partition_file(image_dir, self.partition_name, ".img")
+      else:
+        image_filename = find_partition_file(image_dir, self.partition_name, image_ext)
       image = ImageHandler(image_filename, read_only=True, skip_missing=allow_missing_partitions)
     if image._image is None:
       sys.stderr.write(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!\n')
@@ -2672,6 +2675,9 @@ class Avb(object):
       if (isinstance(desc, AvbChainPartitionDescriptor) and
               not os.path.exists(os.path.join(image_dir, desc.partition_name + image_ext))):
         desc.partition_name = os.path.splitext(os.path.basename(find_partition_file(image_dir, desc.partition_name, image_ext)))[0]
+      elif (isinstance(desc, AvbChainPartitionDescriptor) and
+              os.path.exists(os.path.join(image_dir, desc.partition_name + ".img"))):
+        image_ext = ".img"
       if (isinstance(desc, AvbChainPartitionDescriptor)
           and follow_chain_partitions
           and expected_chain_partitions_map.get(desc.partition_name) is None
