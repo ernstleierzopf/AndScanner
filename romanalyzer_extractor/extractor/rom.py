@@ -81,7 +81,7 @@ class ROMExtractor(Extractor):
             elif abspath.name.lower() in ("vbmeta.img", "vbmeta-sign.img", "vbmeta.bin"):
                 if self.vbmeta_img and len(str(self.vbmeta_img)) < len(str(abspath)):
                     self.log.info(f"Another vbmeta image with a shorter path already exists, so {abspath} is skipped.")
-                else:
+                elif not os.path.basename(os.path.dirname(self.vbmeta_img)).startswith("AP_"):
                     self.vbmeta_img = abspath
         self.process_queue.extend(target)
 
@@ -189,7 +189,6 @@ class ROMExtractor(Extractor):
             # known issue with Huawei vbmeta verification: https://github.com/berkeley-dev/huawei_quirks
             # None of the Vivo firmware images from https://www.vivo.com/uk/support/system-update can be verified
             self.log.debug("Failed to verify image with vbmeta.img.")
-            self.log.debug(output)
             return False
         self.log.debug("\tverified image with vbmeta.img successfully.")
         return True

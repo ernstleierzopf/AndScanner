@@ -705,7 +705,7 @@ def verify_vbmeta_signature(vbmeta_header, vbmeta_blob):
       if retcode != 0:
         raise AvbError('Error verifying data: {}'.format(perr))
       if pout != padding_and_digest:
-        sys.stderr.write('Signature not correct\n')
+        print('Signature not correct')
         return False
       # p = subprocess.Popen(
       #     ['openssl', 'rsa', '-inform', 'DER', '-in', der_tmpfile.name,
@@ -1610,7 +1610,7 @@ class AvbHashtreeDescriptor(AvbDescriptor):
         image_filename = find_partition_file(image_dir, self.partition_name, image_ext)
       image = ImageHandler(image_filename, read_only=True, skip_missing=allow_missing_partitions)
     if image._image is None:
-      sys.stderr.write(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!\n')
+      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!')
       return None
     # Generate the hashtree and checks that it matches what's in the file.
     digest_size = self._hashtree_digest_size()
@@ -1625,9 +1625,9 @@ class AvbHashtreeDescriptor(AvbDescriptor):
                                                 tree_size)
     # The root digest must match unless it is not embedded in the descriptor.
     if self.root_digest and root_digest != self.root_digest:
-      sys.stderr.write('hashtree of {} does not match descriptor\n'.format(os.path.abspath(image_filename).split("ramdisk/")[-1]))
+      print('hashtree of {} does not match descriptor'.format(os.path.abspath(image_filename).split("ramdisk/")[-1]))
       if ".." in image_filename and allow_missing_partitions:
-        sys.stderr.write('not failing verification yet, as file was searched and might be wrong and allow_missing_partitions is true.\n')
+        print('not failing verification yet, as file was searched and might be wrong and allow_missing_partitions is true.')
         return True
       return False
     # ... also check that the on-disk hashtree matches
@@ -1640,11 +1640,10 @@ class AvbHashtreeDescriptor(AvbDescriptor):
             .format(self.partition_name))
     else:
       if hash_tree != hash_tree_ondisk:
-        sys.stderr.write('hashtree of {} contains invalid data\n'.
-                         format(image_filename))
+        print('hashtree of {} contains invalid data'.format(image_filename))
         return False
       print('{}: Successfully verified {} hashtree of {} for image of {} bytes'
-            .format(self.partition_name, self.hash_algorithm, image.filename,
+            .format(self.partition_name, self.hash_algorithm, os.path.abspath(image.filename).split("ramdisk/")[-1],
                     self.image_size))
     # TODO(zeuthen): we could also verify that the FEC stored in the image is
     # correct but this a) currently requires the 'fec' binary; and b) takes a
@@ -1785,7 +1784,7 @@ class AvbHashDescriptor(AvbDescriptor):
       image_filename = find_partition_file(image_dir, self.partition_name, image_ext)
       image = ImageHandler(image_filename, read_only=True, skip_missing=allow_missing_partitions)
     if image._image is None:
-      sys.stderr.write(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!\n')
+      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!')
       return True
     data = image.read(self.image_size)
     ha = hashlib.new(self.hash_algorithm)
@@ -1802,8 +1801,8 @@ class AvbHashDescriptor(AvbDescriptor):
                           allow_missing_partitions)
         self.partition_name = part_name
       if not res:
-          sys.stderr.write('{} digest of {} does not match digest in descriptor\n'.
-                           format(self.hash_algorithm, os.path.abspath(image_filename).split("ramdisk/")[-1]))
+          print('{} digest of {} does not match digest in descriptor'.format(
+              self.hash_algorithm, os.path.abspath(image_filename).split("ramdisk/")[-1]))
           return False
     if self.digest and digest == self.digest:
         print('{}: Successfully verified {} hash of {} for image of {} bytes'
@@ -2025,24 +2024,24 @@ class AvbChainPartitionDescriptor(AvbDescriptor):
     if value is None:
         value = expected_chain_partitions_map.get(self.partition_name.upper())
     if not value:
-      sys.stderr.write('No expected chain partition for partition {}. Use '
+      print('No expected chain partition for partition {}. Use '
                        '--expected_chain_partition to specify expected '
-                       'contents or --follow_chain_partitions.\n'.
+                       'contents or --follow_chain_partitions.'.
                        format(self.partition_name))
       return False
     rollback_index_location, pk_blob = value
 
     if self.rollback_index_location != rollback_index_location:
-      sys.stderr.write('Expected rollback_index_location {} does not '
-                       'match {} in descriptor for partition {}\n'.
+      print('Expected rollback_index_location {} does not '
+                       'match {} in descriptor for partition {}'.
                        format(rollback_index_location,
                               self.rollback_index_location,
                               self.partition_name))
       return False
 
     if self.public_key != pk_blob:
-      sys.stderr.write('Expected public key blob does not match public '
-                       'key blob in descriptor for partition {}\n'.
+      print('Expected public key blob does not match public '
+                       'key blob in descriptor for partition {}'.
                        format(self.partition_name))
       return False
 
@@ -2660,7 +2659,7 @@ class Avb(object):
 
     image = ImageHandler(image_filename, read_only=True, skip_missing=allow_missing_partitions)
     if image._image is None:
-      sys.stderr.write(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!\n')
+      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!')
       return None
     (footer, header, descriptors, _) = self._parse_image(image)
     offset = 0
@@ -2718,7 +2717,7 @@ class Avb(object):
             or (allow_missing_partitions and desc.verify(
               image_dir, image_ext, expected_chain_partitions_map, image, accept_zeroed_hashtree, allow_missing_partitions) is False):
           verified = False
-          sys.stderr.write('Error verifying descriptor.\n')
+          print('Error verifying descriptor.')
       # Honor --follow_chain_partitions - add '--' to make the output more
       # readable.
       if (isinstance(desc, AvbChainPartitionDescriptor)
@@ -2875,7 +2874,7 @@ class Avb(object):
               shutil.copyfile(file_path, './' + file)
             break
     else:
-      sys.stderr.write('test/data directory does not exist! Could not compare public key against testkeys.')
+      print('test/data directory does not exist! Could not compare public key against testkeys.')
 
   def calculate_vbmeta_digest(self, image_filename, hash_algorithm, output):
     """Implements the 'calculate_vbmeta_digest' command.
@@ -5049,7 +5048,7 @@ class AvbTool(object):
       print('avbtool: error: too few arguments')
       sys.exit(2)
     except AvbError as e:
-      sys.stderr.write('{}: {}\n'.format(argv[0], str(e)))
+      print('{}: {}'.format(argv[0], str(e)))
       sys.exit(1)
 
   def version(self, _):
@@ -5124,15 +5123,15 @@ class AvbTool(object):
     # TODO(zeuthen): Remove when removing support for the
     # '--generate_fec' option above.
     if args.generate_fec:
-      sys.stderr.write('The --generate_fec option is deprecated since FEC '
+      print('The --generate_fec option is deprecated since FEC '
                        'is now generated by default. Use the option '
-                       '--do_not_generate_fec to not generate FEC.\n')
+                       '--do_not_generate_fec to not generate FEC.')
     if args.hash_algorithm == '':
       args.hash_algorithm = 'sha1'
       # In --calc_max_image_size mode don't show the sha1 warning, since sha1
       # digests get padded to the same size as sha256 anyway.
       if not args.calc_max_image_size:
-        sys.stderr.write(
+        print(
 """Warning: 'avbtool add_hashtree_footer' executed without an explicit
 --hash_algorithm option. Defaulting to sha1 for backwards compatibility.
 Please use '--hash_algorithm sha256'.
