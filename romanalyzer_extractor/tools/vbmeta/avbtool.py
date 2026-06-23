@@ -396,7 +396,7 @@ def find_partition_file(image_dir, partition_name, image_ext):
           if f == partition_name + image_ext:
             index = i
         rel_target = os.path.relpath(filtered_potential_files[index], os.path.dirname(image_filename))
-        os.symlink(rel_target, image_filename)
+        return rel_target
       elif ".." not in image_filename:
         image_filename = find_partition_file(image_dir + "/..", partition_name, image_ext)
     return image_filename
