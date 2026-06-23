@@ -368,7 +368,6 @@ def find_partition_file(image_dir, partition_name, image_ext):
     Returns:
       the path of the searched partition file
     """
-    orig_image_dir = image_dir
     if image_dir == "":
         image_dir = "."
     image_filename = os.path.join(image_dir, partition_name + image_ext)
@@ -399,8 +398,7 @@ def find_partition_file(image_dir, partition_name, image_ext):
         rel_target = os.path.relpath(filtered_potential_files[index], os.path.dirname(image_filename))
         os.symlink(rel_target, image_filename)
       else:
-        if orig_image_dir == "":
-          image_filename = find_partition_file("..", partition_name, image_ext)
+        image_filename = find_partition_file(image_dir + "/..", partition_name, image_ext)
     return image_filename
 
 
@@ -1627,9 +1625,8 @@ class AvbHashtreeDescriptor(AvbDescriptor):
                                                 tree_size)
     # The root digest must match unless it is not embedded in the descriptor.
     if self.root_digest and root_digest != self.root_digest:
-      sys.stderr.write('hashtree of {} does not match descriptor\n'.
-                       format(image_filename))
-      if image_filename.startswith("..") and allow_missing_partitions:
+      sys.stderr.write('hashtree of {} does not match descriptor\n'.format(os.path.abspath(image_filename).split("ramdisk/")[-1]))
+      if ".." in image_filename and allow_missing_partitions:
         sys.stderr.write('not failing verification yet, as file was searched and might be wrong and allow_missing_partitions is true.\n')
         return True
       return False
@@ -2655,12 +2652,11 @@ class Avb(object):
 
     key_blob = None
     if key_path:
-      print('Verifying image {} using key at {}'.format(image_filename,
-                                                        key_path))
+      print('Verifying image {} using key at {}'.format(os.path.abspath(image_filename), key_path))
       key_blob = RSAPublicKey(key_path).encode()
     else:
       print('Verifying image {} using embedded public key'.format(
-          image_filename))
+          os.path.abspath(image_filename).split("ramdisk/")[-1]))
 
     image = ImageHandler(image_filename, read_only=True, skip_missing=allow_missing_partitions)
     if image._image is None:
@@ -2693,10 +2689,10 @@ class Avb(object):
 
     if footer:
       print('vbmeta: Successfully verified footer and {} vbmeta struct in {}'
-            .format(alg_name, image.filename))
+            .format(alg_name, os.path.abspath(image.filename).split("ramdisk/")[-1]))
     else:
       print('vbmeta: Successfully verified {} vbmeta struct in {}'
-            .format(alg_name, image.filename))
+            .format(alg_name, os.path.abspath(image.filename).split("ramdisk/")[-1]))
 
     verified = True
     for desc in descriptors:
