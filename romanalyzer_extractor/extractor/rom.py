@@ -189,6 +189,7 @@ class ROMExtractor(Extractor):
             # known issue with Huawei vbmeta verification: https://github.com/berkeley-dev/huawei_quirks
             # None of the Vivo firmware images from https://www.vivo.com/uk/support/system-update can be verified
             self.log.debug("Failed to verify image with vbmeta.img.")
+            self.log.debug(output)
             return False
         self.log.debug("\tverified image with vbmeta.img successfully.")
         return True
