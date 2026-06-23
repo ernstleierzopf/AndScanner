@@ -81,7 +81,7 @@ class ROMExtractor(Extractor):
             elif abspath.name.lower() in ("vbmeta.img", "vbmeta-sign.img", "vbmeta.bin"):
                 if self.vbmeta_img and len(str(self.vbmeta_img)) < len(str(abspath)):
                     self.log.info(f"Another vbmeta image with a shorter path already exists, so {abspath} is skipped.")
-                elif not os.path.basename(os.path.dirname(self.vbmeta_img)).startswith("AP_"):
+                elif not self.vbmeta_img or not os.path.basename(os.path.dirname(self.vbmeta_img)).startswith("AP_"):
                     self.vbmeta_img = abspath
         self.process_queue.extend(target)
 
