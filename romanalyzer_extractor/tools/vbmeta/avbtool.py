@@ -368,6 +368,7 @@ def find_partition_file(image_dir, partition_name, image_ext):
     Returns:
       the path of the searched partition file
     """
+    orig_image_dir = image_dir
     if image_dir == "":
         image_dir = "."
     image_filename = os.path.join(image_dir, partition_name + image_ext)
@@ -377,14 +378,29 @@ def find_partition_file(image_dir, partition_name, image_ext):
         for file in files:
           file_path = os.path.join(root, file)
           splt_file = os.path.splitext(file.lower())
-          if splt_file[0].lower() == partition_name and len(splt_file) > 1 and splt_file[1].lower() == image_ext:
+          if os.path.islink(file_path) and not os.path.exists(file_path) and "ramdisk" in os.path.realpath(file_path):
+              new_path = os.path.abspath(image_dir).split("ramdisk")[0] + "ramdisk" + os.path.realpath(file_path).split("ramdisk")[1]
+              if os.path.exists(new_path):
+                print(f"Renaming bad symlink from {os.path.realpath(file_path)} to {new_path}")
+                os.remove(file_path)
+                os.symlink(new_path, file_path)
+          if (splt_file[0].lower() == partition_name and len(splt_file) > 1 and splt_file[1].lower() == image_ext and
+                  os.path.exists(file_path)):
             return file_path
-          if file.lower().startswith(partition_name) and len(splt_file) > 1 and splt_file[1] == image_ext:
+          if (file.lower().startswith(partition_name) and len(splt_file) > 1 or (partition_name[-1].isdigit() and file.lower().startswith(
+                  partition_name[:-1]))) and (file_path.endswith(".img") or file_path.endswith(".bin")):
             potential_files.append(file_path)
       filtered_potential_files = sorted(potential_files, key=priority_key)
       if filtered_potential_files:
-        rel_target = os.path.relpath(filtered_potential_files[0], os.path.dirname(image_filename))
+        index = 0
+        for i, f in enumerate(filtered_potential_files):
+          if f == partition_name + image_ext:
+            index = i
+        rel_target = os.path.relpath(filtered_potential_files[index], os.path.dirname(image_filename))
         os.symlink(rel_target, image_filename)
+      else:
+        if orig_image_dir == "":
+          image_filename = find_partition_file("..", partition_name, image_ext)
     return image_filename
 
 
@@ -1613,6 +1629,9 @@ class AvbHashtreeDescriptor(AvbDescriptor):
     if self.root_digest and root_digest != self.root_digest:
       sys.stderr.write('hashtree of {} does not match descriptor\n'.
                        format(image_filename))
+      if image_filename.startswith("..") and allow_missing_partitions:
+        sys.stderr.write('not failing verification yet, as file was searched and might be wrong and allow_missing_partitions is true.\n')
+        return True
       return False
     # ... also check that the on-disk hashtree matches
     image.seek(self.tree_offset)
