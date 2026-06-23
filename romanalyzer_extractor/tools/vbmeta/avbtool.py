@@ -1803,11 +1803,11 @@ class AvbHashDescriptor(AvbDescriptor):
         self.partition_name = part_name
       if not res:
           sys.stderr.write('{} digest of {} does not match digest in descriptor\n'.
-                           format(self.hash_algorithm, image_filename))
+                           format(self.hash_algorithm, os.path.abspath(image_filename).split("ramdisk/")[-1]))
           return False
     if self.digest and digest == self.digest:
         print('{}: Successfully verified {} hash of {} for image of {} bytes'
-              .format(self.partition_name, self.hash_algorithm, image.filename,
+              .format(self.partition_name, self.hash_algorithm, os.path.abspath(image.filename).split("ramdisk/")[-1],
                       self.image_size))
     return True
 
