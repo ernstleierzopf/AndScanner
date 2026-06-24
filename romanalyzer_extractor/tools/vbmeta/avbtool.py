@@ -1629,6 +1629,9 @@ class AvbHashtreeDescriptor(AvbDescriptor):
       print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!', image_filename,
             image_dir, image_ext)
       return None
+    if image.image_size < AvbVBMetaHeader.SIZE:
+      print('Image file {} too small with size of {} bytes.'.format(image_filename, image.image_size))
+      return None
     # Generate the hashtree and checks that it matches what's in the file.
     digest_size = self._hashtree_digest_size()
     digest_padding = round_to_pow2(digest_size) - digest_size
@@ -1805,6 +1808,9 @@ class AvbHashDescriptor(AvbDescriptor):
     if image._image is None:
       print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!', image_filename,
             image_dir, image_ext)
+      return True
+    if image.image_size < AvbVBMetaHeader.SIZE:
+      print('Image file {} too small with size of {} bytes.'.format(image_filename, image.image_size))
       return True
     data = image.read(self.image_size)
     ha = hashlib.new(self.hash_algorithm)
@@ -2792,6 +2798,8 @@ class Avb(object):
     """
     image = ImageHandler(image_filename, read_only=True, skip_missing=True)
     if image._image is None:
+      return
+    if image.image_size < AvbVBMetaHeader.SIZE:
       return
     (_, _, descriptors, _) = self._parse_image(image)
 
