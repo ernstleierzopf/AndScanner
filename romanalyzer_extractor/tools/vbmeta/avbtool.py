@@ -1635,8 +1635,8 @@ class AvbHashtreeDescriptor(AvbDescriptor):
     if self.root_digest and root_digest != self.root_digest:
       print('hashtree of {} does not match descriptor'.format(os.path.abspath(image_filename).split("ramdisk/")[-1]))
       dirname = os.path.basename(os.path.dirname(image_filename))
-      if ".." in image_filename and allow_missing_partitions and not (dirname.startswith("CSC_") or dirname.startswith("HOME_CSC_") or
-                                                                      dirname.startswith("USERDATA_")):
+      if ".." in image_filename and allow_missing_partitions and (dirname.startswith("CSC_") or dirname.startswith("HOME_CSC_") or
+                                                                  dirname.startswith("USERDATA_")):
         print('not failing verification yet, as file was searched and might be wrong and allow_missing_partitions is true.')
         return True
       return False
