@@ -395,9 +395,15 @@ def find_partition_file(image_dir, partition_name, image_ext):
         for i, f in enumerate(filtered_potential_files):
           if f == partition_name + image_ext:
             index = i
-        return os.path.join(image_dir, filtered_potential_files[index])
+        if image_dir == ".." and filtered_potential_files[index].startswith(".."):
+          image_dir = ""
+        return os.path.join(os.path.abspath(image_dir), filtered_potential_files[index])
       elif ".." not in image_filename:
-        image_fn = find_partition_file(image_dir + "/..", partition_name, image_ext)
+        if image_dir == ".":
+          image_dir = ".."
+        else:
+          image_dir += "/.."
+        image_fn = find_partition_file(image_dir, partition_name, image_ext)
         if os.path.exists(image_fn):
           image_filename = image_fn
     return image_filename
