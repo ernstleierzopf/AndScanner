@@ -395,8 +395,7 @@ def find_partition_file(image_dir, partition_name, image_ext):
         for i, f in enumerate(filtered_potential_files):
           if f == partition_name + image_ext:
             index = i
-        rel_target = os.path.relpath(filtered_potential_files[index], os.path.dirname(image_filename))
-        return rel_target
+        return os.path.abspath(filtered_potential_files[index], os.path.dirname(image_filename))
       elif ".." not in image_filename:
         image_fn = find_partition_file(image_dir + "/..", partition_name, image_ext)
         if os.path.exists(image_fn):
@@ -1612,7 +1611,8 @@ class AvbHashtreeDescriptor(AvbDescriptor):
         image_filename = find_partition_file(image_dir, self.partition_name, image_ext)
       image = ImageHandler(image_filename, read_only=True, skip_missing=allow_missing_partitions)
     if image._image is None:
-      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!')
+      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!', image_filename,
+            image_dir, image_ext)
       return None
     # Generate the hashtree and checks that it matches what's in the file.
     digest_size = self._hashtree_digest_size()
