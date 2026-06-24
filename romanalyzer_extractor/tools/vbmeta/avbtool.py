@@ -398,7 +398,9 @@ def find_partition_file(image_dir, partition_name, image_ext):
         rel_target = os.path.relpath(filtered_potential_files[index], os.path.dirname(image_filename))
         return rel_target
       elif ".." not in image_filename:
-        image_filename = find_partition_file(image_dir + "/..", partition_name, image_ext)
+        image_fn = find_partition_file(image_dir + "/..", partition_name, image_ext)
+        if os.path.exists(image_fn):
+          image_filename = image_fn
     return image_filename
 
 
@@ -1626,7 +1628,9 @@ class AvbHashtreeDescriptor(AvbDescriptor):
     # The root digest must match unless it is not embedded in the descriptor.
     if self.root_digest and root_digest != self.root_digest:
       print('hashtree of {} does not match descriptor'.format(os.path.abspath(image_filename).split("ramdisk/")[-1]))
-      if ".." in image_filename and allow_missing_partitions:
+      dirname = os.path.basename(os.path.dirname(image_filename))
+      if ".." in image_filename and allow_missing_partitions and not (dirname.startswith("CSC_") or dirname.startswith("HOME_CSC_") or
+                                                                      dirname.startswith("USERDATA_")):
         print('not failing verification yet, as file was searched and might be wrong and allow_missing_partitions is true.')
         return True
       return False
@@ -1784,7 +1788,8 @@ class AvbHashDescriptor(AvbDescriptor):
       image_filename = find_partition_file(image_dir, self.partition_name, image_ext)
       image = ImageHandler(image_filename, read_only=True, skip_missing=allow_missing_partitions)
     if image._image is None:
-      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!')
+      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!', image_filename,
+            image_dir, image_ext)
       return True
     data = image.read(self.image_size)
     ha = hashlib.new(self.hash_algorithm)
@@ -2659,7 +2664,8 @@ class Avb(object):
 
     image = ImageHandler(image_filename, read_only=True, skip_missing=allow_missing_partitions)
     if image._image is None:
-      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!')
+      print(os.path.splitext(os.path.basename(image_filename.lower()))[0] + ': Partition not found and not verified!', image_filename,
+            image_dir, image_ext)
       return None
     (footer, header, descriptors, _) = self._parse_image(image)
     offset = 0
