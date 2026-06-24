@@ -26,7 +26,7 @@ class F2fsImgExtractor(Extractor):
             except shutil.Error as e:
                 self.log.debug(f"Encountered errors when copying files from {mount_point}")
                 self.log.debug(e)
-            if abspath.exists():
+            if abspath.exists() and not self.target.name.endswith(".img") and not self.target.name.endswith(".bin"):
                 abspath.unlink()
         except subprocess.CalledProcessError as e:
             self.log.error(f"Could not mount {self.target} to {mount_point}. Skipping {self.target}..")
