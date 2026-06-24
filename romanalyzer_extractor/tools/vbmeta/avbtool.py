@@ -348,6 +348,9 @@ def parse_number(string):
   return int(string, 0)
 
 
+VBMETA_EXTENSIONS = [".img", ".bin", ".elf.lz4.extracted", ".mbn.lz4.extracted"]
+
+
 priority = ["null", "vivotest"]
 def priority_key(path):
     path = path.lower()
@@ -387,14 +390,20 @@ def find_partition_file(image_dir, partition_name, image_ext):
                   os.path.exists(file_path)):
             return file_path
           if (file.lower().startswith(partition_name) and len(splt_file) > 1 or (partition_name[-1].isdigit() and file.lower().startswith(
-                  partition_name[:-1]))) and (file_path.endswith(".img") or file_path.endswith(".bin")):
+                  partition_name[:-1]))) and any(file_path.endswith(x) for x in VBMETA_EXTENSIONS):
             potential_files.append(file_path)
       filtered_potential_files = sorted(potential_files, key=priority_key)
       if filtered_potential_files:
         index = 0
+        vbmeta_ext_index = 9999
         for i, f in enumerate(filtered_potential_files):
-          if f == partition_name + image_ext:
-            index = i
+          if any(os.path.basename(f) == partition_name + x for x in VBMETA_EXTENSIONS):
+            for j in range(len(VBMETA_EXTENSIONS)):
+              if os.path.basename(f) == partition_name + VBMETA_EXTENSIONS[j]:
+                if j < vbmeta_ext_index:
+                  vbmeta_ext_index = j
+                  index = i
+                  break
         if image_dir == ".." and filtered_potential_files[index].startswith(".."):
           image_dir = ""
         return os.path.join(os.path.abspath(image_dir), filtered_potential_files[index])
