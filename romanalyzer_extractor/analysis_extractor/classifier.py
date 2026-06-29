@@ -87,7 +87,7 @@ def classify(target):
             return "ext4img"
         return "extimg"
 
-    if file_type == "OpenPGP Public Key":
+    if file_type == "OpenPGP Public Key" or target.suffix.lower() == ".ofp":
         return "ofp"
 
     if target.suffix == ".sin":
