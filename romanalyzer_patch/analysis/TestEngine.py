@@ -160,6 +160,8 @@ class TestEngine(object):
         logger.debug("Total number of testcase: {}".format(totalTasks))
 
         # pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+        # python3.14 changed default to forkserver which leads to reload of imports and overwriting logs.
+        multiprocessing.set_start_method("fork")
         pool = multiprocessing.Pool(processes=8)
         
         taskArgs = (
