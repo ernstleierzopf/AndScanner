@@ -1,3 +1,5 @@
+import shutil
+import os
 from pathlib import Path
 from romanalyzer_extractor.utils import rmf, execute
 from romanalyzer_extractor.extractor.base import Extractor
@@ -10,20 +12,23 @@ class OZipExtractor(Extractor):
         self.tool = Path('romanalyzer_extractor/tools/oppo_ozip_decrypt/ozipdecrypt.py').absolute()
 
     def extract(self):
-        self.log.debug("OZip extract target: {}".format(self.target))
+        converted_zip = self.extracted.with_suffix("")
+        tmp_dir = self.extracted.parent / "tmp"
+        self.log.debug("OZip extract target: {}".format(converted_zip))
         self.log.debug("\tstart extract archive.")
 
-        converted_zip = self.target.with_suffix('.zip')
-        convert_cmd = 'python3 {decrypt_script} "{ozip}"'.format(
-            decrypt_script=self.tool, ozip=self.target.absolute()
-        )
+        convert_cmd = 'python3 {decrypt_script} "{ozip}" "{tmp_path}"'.format(decrypt_script=self.tool, ozip=self.target.absolute(), tmp_path=tmp_dir)
         execute(convert_cmd)
+        if os.path.exists(tmp_dir):
+            shutil.rmtree(tmp_dir)
 
         self.log.debug('\tconverted ozip to zip: {}'.format(converted_zip))
 
         extractor = ArchiveExtractor(converted_zip)
+        extractor.target = converted_zip
         self.extracted = extractor.extract()
-        rmf(converted_zip)
+        if os.path.exists(converted_zip):
+            os.path.unlink(converted_zip)
         if self.extracted and self.extracted.exists(): 
             self.log.debug("\textracted path: {}".format(self.extracted))
             return self.extracted

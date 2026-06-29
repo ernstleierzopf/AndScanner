@@ -373,6 +373,7 @@ def find_partition_file(image_dir, partition_name, image_ext):
     """
     if image_dir == "":
         image_dir = "."
+    part_name_lower = partition_name.lower()
     image_filename = os.path.join(image_dir, partition_name + image_ext)
     if not os.path.exists(image_filename):
       potential_files = []
@@ -386,20 +387,20 @@ def find_partition_file(image_dir, partition_name, image_ext):
                 print(f"Renaming bad symlink from {os.path.realpath(file_path)} to {new_path}")
                 os.remove(file_path)
                 os.symlink(new_path, file_path)
-          if (splt_file[0].lower() == partition_name and len(splt_file) > 1 and splt_file[1].lower() == image_ext and
+          if (splt_file[0].lower() == part_name_lower and len(splt_file) > 1 and splt_file[1].lower() == image_ext and
                   os.path.exists(file_path)):
             return file_path
-          if (file.lower().startswith(partition_name) and len(splt_file) > 1 or (partition_name[-1].isdigit() and file.lower().startswith(
-                  partition_name[:-1]))) and any(file_path.endswith(x) for x in VBMETA_EXTENSIONS):
+          if (file.lower().startswith(part_name_lower) and len(splt_file) > 1 or (part_name_lower[-1].isdigit() and file.lower().startswith(
+                  part_name_lower[:-1]))) and any(file_path.endswith(x) for x in VBMETA_EXTENSIONS):
             potential_files.append(file_path)
       filtered_potential_files = sorted(potential_files, key=priority_key)
       if filtered_potential_files:
         index = 0
         vbmeta_ext_index = 9999
         for i, f in enumerate(filtered_potential_files):
-          if any(os.path.basename(f) == partition_name + x for x in VBMETA_EXTENSIONS):
+          if any(os.path.basename(f).lower() == part_name_lower + x for x in VBMETA_EXTENSIONS):
             for j in range(len(VBMETA_EXTENSIONS)):
-              if os.path.basename(f) == partition_name + VBMETA_EXTENSIONS[j]:
+              if os.path.basename(f).lower() == part_name_lower + VBMETA_EXTENSIONS[j]:
                 if j < vbmeta_ext_index:
                   vbmeta_ext_index = j
                   index = i

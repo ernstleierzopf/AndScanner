@@ -17,7 +17,7 @@ from Crypto.Cipher import AES
 import zipfile
 from os.path import basename
 
-def main(file_arg):
+def main(file_arg, tmp_arg):
     keys = [
         "D6EECF0AE5ACD4E0E9FE522DE7CE381E",  # mnkey
         "D6ECCF0AE5ACD4E0E92E522DE7C1381E",  # mkey
@@ -212,6 +212,7 @@ def main(file_arg):
 
     print("ozipdecrypt 1.31 (c) B.Kerler 2017-2021")
     filename = file_arg
+    outpath = tmp_arg
     with open(filename, 'rb') as fr:
         magic = fr.read(12)
         if magic == b"OPPOENCRYPT!":
@@ -230,8 +231,8 @@ def main(file_arg):
                 print("Unknown AES key, reverse key from recovery first!")
                 return 1
             ctx = AES.new(key, AES.MODE_ECB)
-            filename = file_arg[:-4] + "zip"
-            with open(filename, 'wb') as wf:
+            outzip = os.path.join(os.path.dirname(outpath), os.path.basename(filename)[:-4] + 'zip')
+            with open(outzip, 'wb') as wf:
                 fr.seek(0x1050)
                 print("Decrypting...")
                 while True:
@@ -247,8 +248,6 @@ def main(file_arg):
         else:
             testkey = True
             filename = os.path.abspath(file_arg)
-            path = os.path.abspath(os.path.dirname(filename))
-            outpath = os.path.join(path, "tmp")
             if os.path.exists(outpath):
                 shutil.rmtree(outpath)
             os.mkdir(outpath)
@@ -283,7 +282,7 @@ def main(file_arg):
                         print("Unknown image, please report an issue with image name!")
                         return 1
 
-                outzip = filename[:-4] + 'zip'
+                outzip = os.path.join(os.path.dirname(outpath), os.path.basename(filename)[:-4] + 'zip')
                 with zipfile.ZipFile(outzip, 'w', zipfile.ZIP_DEFLATED) as WzipObj:
                     for info in zo.infolist():
                         print("Extracting " + info.filename)
@@ -295,12 +294,15 @@ def main(file_arg):
                             if info.filename in clist:
                                 decryptfile(key, os.path.join(outpath,"out"))
                                 WzipObj.write(os.path.join(outpath, "out"), orgfilename)
+                            else:
+                                WzipObj.write(os.path.join(outpath, "out"), orgfilename)
                         else:
                             with open(os.path.join(outpath,"out"), 'rb') as rr:
                                 magic = rr.read(12)
                             if magic == b"OPPOENCRYPT!":
                                 decryptfile(key, os.path.join(outpath,"out"))
                                 WzipObj.write(os.path.join(outpath, "out"), orgfilename)
+
                 print("DONE... files decrypted to: " + outzip)
                 return 0
 
@@ -310,8 +312,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="ozipdecrypt 1.3 (c) B.Kerler 2017-2021", add_help=False)
     required = parser.add_argument_group('Required')
     required.add_argument("filename", help="Path to ozip file")
+    required.add_argument("tmppath", help="Path tmp directory")
     optional = parser.add_argument_group('Optional')
     optional.add_argument("-h", "--help", action="help", help="Show this help message and exit")
     args = parser.parse_args()
 
-    sys.exit(main(args.filename))
+    sys.exit(main(args.filename, args.tmppath))
